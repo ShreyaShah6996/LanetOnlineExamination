@@ -1,0 +1,140 @@
+.social {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.social ul {
+    display: flex;
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.social ul li {
+    height: 40px;
+    width: 40px;
+    border: 1px solid #DDDDDD;
+    margin-right: 10px;
+    border-radius: 50px;
+    transition-duration: 1s;
+}
+
+.social ul li a {
+    text-decoration: none;
+    color: #000;
+}
+
+.social ul li a i {
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    flex-direction: column;
+}
+
+.facebook:hover {
+    background-color: #3b5998;
+}
+
+.facebook i:hover {
+    color: #fff;
+}
+
+.insta:hover {
+    background-color: #C13584;
+}
+
+.insta i:hover {
+    color: #fff;
+}
+
+.google-pluse:hover {
+    background-color: #d34836;
+}
+
+.google-pluse i:hover {
+    color: #fff;
+}
+
+.phone-text input::placeholder {
+    color: #adb5bd;
+}
+
+.input-group-alternative.input-group {
+    background-color: #fff;
+}
+
+.phone-text .react-phone-number-input__row .react-phone-number-input__country .react-phone-number-input__icon {
+    border: 0px solid rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.phone-text .react-phone-number-input__row .react-phone-number-input__country .react-phone-number-input__icon img {
+    position: absolute;
+    top: 0px;
+}
+
+input.react-phone-number-input__input.react-phone-number-input__phone {
+    background-color: transparent;
+    border-bottom: 0;
+    padding: 12% 0px;
+}
+
+input.ant-input.ant-select-search__field {
+    border: none;
+    box-shadow: none;
+    height: 42px;
+}
+
+.clg-drop {
+    padding: 5px 0px;
+}
+
+.reg-frm {
+    padding: 10%;
+}
+
+.clg-drp {
+    width: 88% !important;
+    border: none;
+}
+
+.tech_header {
+    display: flex;
+    margin: 15px 0px;
+}
+
+.tech_header button {
+    padding: 7px 30px
+}
+
+.react-datepicker-popper {
+    z-index: 2 !important;
+}
+
+.tech_add {
+    display: flex;
+    flex: 1;
+}
+
+.test-timepiker {
+    display: flex;
+}
+
+span.ant-time-picker {
+    margin-right: 20px;
+    width: 166px;
+}
+
+@media only screen and (min-width:320px) and (max-width:1024px) {
+    .reg-frm {
+        padding: 0;
+    }
+    .clg-drp {
+        width: 83% !important;
+    }
+}
+
+;

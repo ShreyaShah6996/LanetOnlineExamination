@@ -7,14 +7,23 @@ import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import AdminFooter from "components/Footers/AdminFooter.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
-import routes from "routes.js";
+import routes from "../routes.js";
 
 class Admin extends React.Component {
+
+  componentDidMount() {
+    let userId = localStorage.getItem("userId")
+    if (!userId) {
+      this.props.history.push('/auth/login');
+    }
+  }
+
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
   }
+  
   getRoutes = routes => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {

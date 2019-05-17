@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Switch, withRouter, Route, Redirect } from 'react-router-dom';
-// import CRoute from './views/CustomRoute/CRoute';
-
 import AdminLayout from "layouts/Admin.jsx";
 import AuthLayout from "layouts/Auth.jsx";
 

@@ -1,9 +1,9 @@
 import React from "react";
+import "../../assets/css/styles.css";
 
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -13,10 +13,15 @@ import {
   InputGroup,
   Col, Row
 } from "reactstrap";
+import { notification, AutoComplete } from 'antd';
+import PhoneInput from 'react-phone-number-input';
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
+import 'react-phone-number-input/style.css';
+import 'antd/dist/antd.css';
 
 import * as authAction from '../../Action/authAction';
+import * as collegeAction from '../../Action/collegeAction';
 
 class Register extends React.Component {
   constructor(props) {
@@ -24,19 +29,35 @@ class Register extends React.Component {
     this.state = {
       firstName: "",
       lastName: "",
-      userName: "",
       email: "",
       contactNo: "",
       password: "",
+      collegeId: 0,
       errors: {
         firstName: "",
         lastName: "",
-        userName: "",
-        email: "",
+          email: "",
         contactNo: "",
-        password: ""
+        password: "",
+        collegeId: ""
       }
     };
+  }
+
+  componentDidMount() {
+    this.props.action.CollegeAction.GetCollege();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps !== this.props) {
+      let err_msg = nextProps.register_error;
+      if (err_msg === "User already exists") {
+        this.setState({ err_msg: "Email already taken!" })
+      }
+      else if (err_msg === "") {
+        this.props.history.push('/auth/login')
+      }
+    }
   }
 
   inputChangeHandler(e) {
@@ -44,101 +65,137 @@ class Register extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  collegeHandler(e) {
+    let collegeId = 0;
+    if (this.props.getCollege) {
+      this.props.getCollege.map(college => {
+        if (college.collegeName.concat("(" + college.searchKeyword + ")") === e) {
+          collegeId = college.collegeId;
+        }
+        return null;
+      })
+    }
+    this.setState({ collegeId });
+  }
+
+  openNotificationWithIcon = (type, msg) => {
+    notification[type]({
+      message: msg
+    });
+  };
+
   btnRegister() {
     let fieldsErrors = {};
     //password
-    if (this.state.password === "") {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        password: "* Password Required"
-      }
-    } else if (this.state.password.length < 6) {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        password: "* Password must contain minimum 6 characters"
-      }
-    }
-    //ContactNo
-    if (this.state.contactNo === "") {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        contactNo: "* Contact No Required"
-      }
-    } else if (!this.state.contactNo.match(/^[0-9]{10}$/)) {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        contactNo: "* Contact No must be 10 digits number only"
-      }
-    }
-    //email
-    if (this.state.email === "") {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        email: "* Email Required"
-      }
-    } else if (!this.state.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        email: "* Invalid Email"
-      }
-    }
-    //username
-    if (this.state.userName === "") {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        userName: "* User Name Required"
-      }
-    } else if (!this.state.userName.match(/^[a-zA-Z 0-9]+$/i)) {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        userName: "* Invalid User Name"
-      }
-    }
-    //lastname
-    if (this.state.lastName === "") {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        lastName: "* Last Name Required"
-      }
-    } else if (!this.state.lastName.match(/^[a-zA-Z ]+$/i)) {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        lastName: "* Last Name must contain only alphabets"
-      }
-    }
-    //firstname
-    if (this.state.firstName === "") {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        firstName: "* First Name Required"
-      }
-    } else if (!this.state.firstName.match(/^[a-zA-Z ]+$/i)) {
-      fieldsErrors = {
-        ...this.state.fieldsErrors,
-        firstName: "* First Name must contain only alphabets"
-      }
-    }
-    if (!fieldsErrors.firstName && !fieldsErrors.lastName && !fieldsErrors.userName && !fieldsErrors.email && !fieldsErrors.password && !fieldsErrors.contactNo) {
-      // this.props.action.RegisterAction.RegisterUser(this.state.registerData);
-      alert("Registered Successfully");
+    const { firstName, lastName, email, contactNo, password, errors, collegeId } = this.state
+    if (firstName === "" && lastName === "" && email === "" && contactNo === "" && password === "" && collegeId === 0) {
+      this.openNotificationWithIcon('error', "Please Fill the Details for Registration");
     }
     else {
-      this.setState({
-        errors: fieldsErrors
-      });
+      if (password === "") {
+        fieldsErrors = {
+          ...errors,
+          password: "* Password Required"
+        }
+      } else if (password.length < 6) {
+        fieldsErrors = {
+          ...errors,
+          password: "* Password must contain minimum 6 characters"
+        }
+      }
+      //ContactNo
+      if (contactNo === "") {
+        fieldsErrors = {
+          ...errors,
+          contactNo: "* Contact No Required"
+        }
+      } else if (!contactNo.match(/^(((\+?\(91\))|0|((00|\+)?91))-?)?[7-9]\d{9}$/)) {
+        fieldsErrors = {
+          ...errors,
+          contactNo: "* Contact No must be 10 digits and should not start with 0"
+        }
+      }
+      //College
+      if (collegeId === 0) {
+        fieldsErrors = {
+          ...errors,
+          collegeId: "* Please select your college"
+        }
+      }
+      //email
+      if (email === "") {
+        fieldsErrors = {
+          ...errors,
+          email: "* Email Required"
+        }
+      } else if (!email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+        fieldsErrors = {
+          ...errors,
+          email: "* Invalid Email"
+        }
+      }   
+      //lastname
+      if (lastName === "") {
+        fieldsErrors = {
+          ...errors,
+          lastName: "* Last Name Required"
+        }
+      } else if (!lastName.match(/^[a-zA-Z ]+$/i)) {
+        fieldsErrors = {
+          ...errors,
+          lastName: "* Last Name must contain only alphabets"
+        }
+      }
+      //firstname
+      if (firstName === "") {
+        fieldsErrors = {
+          ...errors,
+          firstName: "* First Name Required"
+        }
+      } else if (!firstName.match(/^[a-zA-Z ]+$/i)) {
+        fieldsErrors = {
+          ...errors,
+          firstName: "* First Name must contain only alphabets"
+        }
+      }
+
+      if (!fieldsErrors.firstName && !fieldsErrors.lastName && !fieldsErrors.email && !fieldsErrors.password && !fieldsErrors.contactNo && !fieldsErrors.collegeId) {
+        let RegisterData = {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          collegeId: collegeId,
+          contactNo: contactNo,
+          password: password,
+        }
+        this.props.action.RegisterAction.RegisterUser(RegisterData);
+      }
+
+      else {
+        this.setState({
+          errors: fieldsErrors
+        });
+      }
     }
 
   }
 
   render() {
+    let collegeList = [];
+    if (this.props.getCollege && this.props.getCollege.length !== 0) {
+      this.props.getCollege.map(college => {
+        return collegeList.push(college.collegeName.concat("(" + college.searchKeyword + ")"));
+      })
+    }
     return (
       <Col lg="6" md="8">
-        <Card className="bg-secondary shadow border-0">
-          <CardHeader style={{ fontSize: "30px", fontVariantCaps: "small-caps" }}>
+        <Card className="bg-secondary shadow border-0" style={{ padding: "10%" }}>
+          <div style={{ fontSize: "24px", fontVariantCaps: "small-caps", textAlign: "center", textTransform: "uppercase", fontWeight: "500" }}>
             Register
-            </CardHeader>
-          <CardBody className="px-lg-5 py-lg-5">
+                </div>
+          <CardBody className="">
             <Form role="form">
+              {this.props.register_error ? <span style={{ color: "red" }}>{this.state.err_msg}</span> : ""}
               <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -146,7 +203,7 @@ class Register extends React.Component {
                       <i className="ni ni-badge" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="First Name" type="text" name="firstName" value={this.state.firstName} onChange={this.inputChangeHandler.bind(this)} />
+                  <Input placeholder="First Name" type="text" name="firstName" value={this.state.firstName} onChange={this.inputChangeHandler.bind(this)} style={{ color: "#000" }} />
                 </InputGroup>
                 <span style={{ color: "red" }}>{this.state.errors.firstName}</span>
               </FormGroup>
@@ -157,21 +214,10 @@ class Register extends React.Component {
                       <i className="ni ni-badge" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Last Name" type="text" name="lastName" value={this.state.lastName} onChange={this.inputChangeHandler.bind(this)} />
+                  <Input placeholder="Last Name" type="text" name="lastName" value={this.state.lastName} onChange={this.inputChangeHandler.bind(this)} style={{ color: "#000" }} />
                 </InputGroup>
                 <span style={{ color: "red" }}>{this.state.errors.lastName}</span>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-single-02" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Username" type="text" name="userName" value={this.state.userName} onChange={this.inputChangeHandler.bind(this)} />
-                </InputGroup>
-                <span style={{ color: "red" }}>{this.state.errors.userName}</span>
-              </FormGroup>
+              </FormGroup>          
               <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -179,20 +225,9 @@ class Register extends React.Component {
                       <i className="ni ni-email-83" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Email" type="email" name="email" value={this.state.email} onChange={this.inputChangeHandler.bind(this)} />
+                  <Input placeholder="Email" type="email" name="email" value={this.state.email} onChange={this.inputChangeHandler.bind(this)} style={{ color: "#000" }} />
                 </InputGroup>
                 <span style={{ color: "red" }}>{this.state.errors.email}</span>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-mobile-button" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Contact No" type="text" name="contactNo" value={this.state.contactNo} onChange={this.inputChangeHandler.bind(this)} />
-                </InputGroup>
-                <span style={{ color: "red" }}>{this.state.errors.contactNo}</span>
               </FormGroup>
               <FormGroup>
                 <InputGroup className="input-group-alternative">
@@ -201,14 +236,47 @@ class Register extends React.Component {
                       <i className="ni ni-lock-circle-open" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Password" type="password" name="password" value={this.state.password} onChange={this.inputChangeHandler.bind(this)} />
+                  <Input placeholder="Password" type="password" name="password" value={this.state.password} autoComplete="current-password" onChange={this.inputChangeHandler.bind(this)} style={{ color: "#000" }} />
                 </InputGroup>
                 <span style={{ color: "red" }}>{this.state.errors.password}</span>
               </FormGroup>
+              <FormGroup className="">
+                <InputGroup className="input-group-alternative clg-drop">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="fas fa-university"></i>
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <AutoComplete
+                    style={{ width: 344, border: "none" }}
+                    dataSource={collegeList}
+                    placeholder="Type your college"
+                    filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                    onChange={this.collegeHandler.bind(this)}
+                  />
+                </InputGroup>
+                <span style={{ color: "red" }}>{this.state.errors.collegeId}</span>
+              </FormGroup>
+              <FormGroup>
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="ni ni-mobile-button" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <PhoneInput
+                    country="IN"
+                    placeholder="Contact No"
+                    value={this.state.contactNo}
+                    className="phone-text"
+                    onChange={phone => this.setState({ errors: { contactNo: "" }, contactNo: phone })} />
+                </InputGroup>
+                <span style={{ color: "red" }}>{this.state.errors.contactNo}</span>
+              </FormGroup>
               <div className="text-center">
-                <Button className="mt-4" color="primary" type="button" onClick={this.btnRegister.bind(this)}>
+                <Button className="mt-4" type="button" onClick={this.btnRegister.bind(this)} style={{ borderRadius: "20px", backgroundImage: "linear-gradient(to right bottom, #3eb0f7, #35adf8, #2ba9f9, #1fa6fa, #12a2fb)", color: "#fff", padding: "3% 16%" }}>
                   Create account
-                  </Button>
+                      </Button>
               </div>
             </Form>
           </CardBody>
@@ -233,13 +301,14 @@ const mapStateToProps = state => {
   return {
     registered_data: state.auth.registered_data,
     register_error: state.auth.register_error,
-    email: state.auth.email
+    getCollege: state.college.get_college
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   action: {
-    RegisterAction: bindActionCreators(authAction, dispatch)
+    RegisterAction: bindActionCreators(authAction, dispatch),
+    CollegeAction: bindActionCreators(collegeAction, dispatch)
   }
 })
 

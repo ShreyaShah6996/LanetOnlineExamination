@@ -1,24 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// reactstrap components
 import {
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  // Form,
-  // FormGroup,
-  // InputGroupAddon,
-  // InputGroupText,
-  // Input,
-  // InputGroup,
   Navbar,
   Nav,
   Container,
   Media
 } from "reactstrap";
+import { connect } from 'react-redux';
+import { bindActionCreators } from "redux";
+
+import * as authAction from '../../Action/authAction';
 
 class AdminNavbar extends React.Component {
+  btnLogout(e) {
+    e.preventDefault();
+    this.props.action.LogoutAction.logoutUser();
+    this.props.history.push('/auth/login');
+  }
+
   render() {
     return (
       <>
@@ -30,18 +33,6 @@ class AdminNavbar extends React.Component {
             >
               {this.props.brandText}
             </Link>
-            {/* <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
-              <FormGroup className="mb-0">
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="fas fa-search" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Search" type="text" />
-                </InputGroup>
-              </FormGroup>
-            </Form> */}
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
@@ -54,7 +45,7 @@ class AdminNavbar extends React.Component {
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        Jessica Jones
+                        {this.props.login_data.name ? this.props.login_data.name : ""}
                       </span>
                     </Media>
                   </Media>
@@ -80,7 +71,7 @@ class AdminNavbar extends React.Component {
                     <span>Support</span>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                  <DropdownItem href="#pablo" onClick={this.btnLogout.bind(this)}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>
@@ -94,4 +85,17 @@ class AdminNavbar extends React.Component {
   }
 }
 
-export default AdminNavbar;
+const mapStateToProps = state => {
+  return {
+    login_data: state.auth.login_data
+  }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  action: {
+    LogoutAction: bindActionCreators(authAction, dispatch)
+  }
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminNavbar);

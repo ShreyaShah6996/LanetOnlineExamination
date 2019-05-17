@@ -10,25 +10,36 @@ import AuthFooter from "components/Footers/AuthFooter.jsx";
 import routes from "routes.js";
 
 class Auth extends React.Component {
+
   componentDidMount() {
     document.body.classList.add("bg-default");
   }
+
   componentWillUnmount() {
     document.body.classList.remove("bg-default");
   }
+  
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/auth") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      } else {
-        return null;
+      let userId = localStorage.getItem("userId");      
+      if (!userId) {
+        if (prop.layout === "/auth") {
+          return (
+            <Route
+              path={prop.layout + prop.path}
+              component={prop.component}
+              key={key}
+            />
+          );
+        }
+        else {
+          return null;
+        }
       }
+      else {
+        this.props.history.push('/admin/index');
+      }
+      return null
     });
   };
   render() {
@@ -36,7 +47,7 @@ class Auth extends React.Component {
       <>
         <div className="main-content">
           <AuthNavbar />
-          <div className="header bg-gradient-info py-7 py-lg-8">
+          <div className="header bg-gradient-info py-8 py-lg-9">
             <div className="separator separator-bottom separator-skew zindex-100">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

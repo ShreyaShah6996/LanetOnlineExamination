@@ -1,5 +1,5 @@
 import * as authService from '../Services/authService';
-import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_SUCCESS, LOGIN_FAIL } from '../Reducer/authReducer';
+import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from '../Reducer/authReducer';
 
 export const RegisterUser = (credentials) => {
     return (dispatch) => {
@@ -12,7 +12,7 @@ export const RegisterUser = (credentials) => {
                         data: {
                             fullName: fullname,
                             email: response.data.user.email,
-                            userName: response.data.user.userName,
+                            // userName: response.data.user.userName,
                             contactNo: response.data.user.contactNo
                         }
                     })
@@ -35,14 +35,14 @@ export const LoginUser = (credentials) => {
             .then((response) => {
                 if (response.status === 200) {
                     let fullname = response.data.user.firstName + " " + response.data.user.lastName;
+                    localStorage.setItem("token", response.data.user.token)
+                    localStorage.setItem("role", response.data.user.role)
+                    localStorage.setItem("name", fullname)
+                    localStorage.setItem("userId", response.data.user.userId)
+                    // localStorage.setItem("userName", response.data.user.userName)
                     dispatch({
                         type: LOGIN_SUCCESS,
-                        data: {
-                            fullName: fullname,
-                            email: response.data.user.email,
-                            userName: response.data.user.userName,
-                            contactNo: response.data.user.contactNo
-                        }
+                        data: response.data.user
                     })
                 }
             })
@@ -50,9 +50,22 @@ export const LoginUser = (credentials) => {
                 if (error) {
                     dispatch({
                         type: LOGIN_FAIL,
-                        register_error: error.response.data.error
+                        login_error: error.response.data.error
                     });
                 }
             })
     }
 }
+
+export const logoutUser = () => {
+    return (dispatch) => {
+        dispatch({
+            type: LOGOUT
+        });
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.removeItem("name");
+        // localStorage.removeItem("userName");
+    }
+};

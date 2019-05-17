@@ -1,44 +1,50 @@
-import React from "react";
-import { Card, CardHeader, CardBody, Container, Badge, Table, Label, Row, Button, Form, FormGroup, Input, TabContent, TabPane, Nav, NavItem, NavLink, Col } from "reactstrap";
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import Select from 'react-select';
-
-//OutTable,
-import { ExcelRenderer } from 'react-excel-renderer';
 import 'react-bootstrap-table/dist/react-bootstrap-table.min.css';
+
 import classnames from 'classnames';
-
 import Header from "components/Headers/Header.jsx";
-
-var users = [
-    {
-        Name: "React JS"
-    },
-    {
-        Name: "Node JS"
-    }
-];
-
-const options = [
-    { value: 1, label: 'React JS' },
-    { value: 2, label: 'Node JS' },
-];
+import React from "react";
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { ExcelRenderer } from 'react-excel-renderer';
+import Select from 'react-select';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Nav, NavItem, NavLink, Row, TabContent, Table, TabPane } from "reactstrap";
+import CustomeSwitch from '../../components/CustomeSwitch/CustomeSwitch'
+import RichTextBox from '../../components/RichTextEditor/richtext'
+import * as techAction from '../../Action/techAction'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux'
+import AddTechnology from './AddTechnology'
+import * as queAction from '../../Action/queAction'
+import { glob_que, opt_a, opt_b, opt_c, opt_d } from '../../components/RichTextEditor/richtext'
 
 class Technology extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            checked: false,
-            subTechInput: 1,
-            selectedOption: null,
             activeTab: '1',
             cols: [],
-            rows: []
+            rows: [],
+            checked_a: false,
+            checked_b: false,
+            checked_c: false,
+            checked_d: false,
+            selectedtech: null,
+            selectedsubtech: null,
+            ismcq: true,
         };
 
         this.QuestionToggle = this.QuestionToggle.bind(this);
     }
-
+    // componentWillReceiveProps=(nextProps)=>{
+    //     if(nextProps.technology !== this.props.technology){
+    //         console.log("called");
+    //     }
+    // }
+    componentDidMount() {
+        this.props.techaction.GetTechnologyAction().then((res) => {
+            document.getElementById("selectsubtech").hidden = true;
+            document.getElementById("fselectsubtech").hidden = true;
+        })
+    }
     QuestionToggle(tab) {
         if (this.state.activeTab !== tab) {
             this.setState({
@@ -46,50 +52,25 @@ class Technology extends React.Component {
             });
         }
     }
-
-    plusTechnology() {
-        document.getElementById("AddTechForm").hidden = false;
-        document.getElementById("plusIcon").hidden = true;
-    }
-
-    SelectHandleChange = (selectedOption) => {
-        this.setState({ selectedOption });
-    }
-
-    addTechnology() {
-        // document.getElementById("AddTechForm").hidden = true;
-    }
-
-    cancelTechnology() {
-        document.getElementById("AddTechForm").hidden = true;
-        document.getElementById("plusIcon").hidden = false;
-
-    }
-    cancelSubTechnology(e) {
-        this.setState({
-            checked: !this.state.checked,
-            subTechInput: 1
+    SelectTechHandleChange = (selectedOption) => {
+        document.getElementById("selectsubtech").hidden = true;
+        document.getElementById("fselectsubtech").hidden = true;
+        let techId = selectedOption.value
+        this.props.technology.map((t) => {
+            if (t.techId === JSON.parse(techId)) {
+                if (t.level === 1) {
+                    this.props.techaction.GetSubtechnologyAction(techId)
+                    document.getElementById("selectsubtech").hidden = false;
+                    document.getElementById("fselectsubtech").hidden = false;
+                }
+            }
+            return true
         })
-        document.getElementById("AddSubTechForm").hidden = true;
-        document.getElementById("addTech").hidden = false;
-        document.getElementById("cancelTech").hidden = false;
-        document.getElementById("level").disabled = false;
+        this.setState({ selectedtech: selectedOption, selectedsubtech: null });
     }
-
-    checked(e) {
-        this.setState({
-            checked: !this.state.checked
-        })
+    SelectSubtechHandleChange = (selectedOption) => {
+        this.setState({ selectedsubtech: selectedOption });
     }
-
-    addSubTechInput = () => {
-        this.setState({ subTechInput: this.state.subTechInput + 1 })
-    }
-
-    removeSubTechInput = () => {
-        this.setState({ subTechInput: this.state.subTechInput - 1 })
-    }
-
     fileHandler = (event) => {
         let fileObj = event.target.files[0];
         ExcelRenderer(fileObj, (err, resp) => {
@@ -104,29 +85,133 @@ class Technology extends React.Component {
             }
         });
     }
-
     mcqClick() {
         document.getElementById("mcq").hidden = false;
         document.getElementById("fillup").hidden = true;
+        this.setState({ ismcq: true });
     }
-
     fillUpClick() {
         document.getElementById("mcq").hidden = true;
         document.getElementById("fillup").hidden = false;
+        this.setState({ ismcq: false });
     }
-
     questionEditor() {
 
     }
-
-    render() {
-        const { checked, selectedOption } = this.state;
-        if (checked) {
-            document.getElementById("AddSubTechForm").hidden = false;
-            document.getElementById("addTech").hidden = true;
-            document.getElementById("cancelTech").hidden = true;
-            document.getElementById("level").disabled = true;
+    EditToggle_a = (e) => {
+        this.setState({ checked_a: !this.state.checked_a });
+    }
+    EditToggle_b = (e) => {
+        this.setState({ checked_b: !this.state.checked_b });
+    }
+    EditToggle_c = (e) => {
+        this.setState({ checked_c: !this.state.checked_c });
+    }
+    EditToggle_d = (e) => {
+        this.setState({ checked_d: !this.state.checked_d });
+    }
+    addQuestion = () => {
+        var a, b, c, d;
+        const techid = (this.state.selectedtech !== null) ? this.state.selectedtech.value : 0;
+        const subtechid = (this.state.selectedsubtech !== null) ? this.state.selectedsubtech.value : null;
+        let obj
+        if (this.state.ismcq) {
+            if (this.state.checked_a) {
+                a = { text: opt_a };
+            }
+            else {
+                let aa = document.getElementById("op_a").value
+                a = { text: aa }
+            }
+            if (this.state.checked_b) {
+                b = { text: opt_b };
+            }
+            else {
+                let bb = document.getElementById("op_b").value
+                b = { text: bb }
+            }
+            if (this.state.checked_c) {
+                c = { text: opt_c };
+            }
+            else {
+                let cc = document.getElementById("op_c").value
+                c = { text: cc }
+            }
+            if (this.state.checked_d) {
+                d = { text: opt_d };
+            }
+            else {
+                let dd = document.getElementById("op_d").value
+                d = { text: dd }
+            }
+            let ans = ''
+            if (document.getElementById("radio1").checked) {
+                ans = a
+            }
+            else if (document.getElementById("radio2").checked) {
+                ans = b
+            }
+            else if (document.getElementById("radio3").checked) {
+                ans = c
+            }
+            else if (document.getElementById("radio4").checked) {
+                ans = d
+            }
+            obj = {
+                techId: parseInt(techid),
+                subTechId: parseInt(subtechid),
+                question: JSON.stringify({ text: glob_que }),
+                a: JSON.stringify(a),
+                b: JSON.stringify(b),
+                c: JSON.stringify(c),
+                d: JSON.stringify(d),
+                answer: JSON.stringify(ans)
+            }
         }
+        else {
+            let ans = document.getElementById("fillup").value
+            obj = {
+                techId: parseInt(techid),
+                subTechId: parseInt(subtechid),
+                question: JSON.stringify({ text: glob_que }),
+                a: null,
+                b: null,
+                c: null,
+                d: null,
+                answer: JSON.stringify({ text: ans })
+            }
+        }
+        let qobj = {
+            questions: [obj]
+        }
+        this.props.queaction.AddQuestionAction(qobj).then((res) => {
+            this.setState({
+                checked_a: false,
+                checked_b: false,
+                checked_c: false,
+                checked_d: false,
+                selectedtech: null,
+                selectedsubtech: null,
+                ismcq: true,
+            })
+            document.getElementById("fillup").value = '';
+            document.getElementById("op_d").value = ''
+            document.getElementById("op_c").value = ''
+            document.getElementById("op_b").value = ''
+            document.getElementById("op_a").value = ''
+            document.getElementById("radio1").checked = false;
+            document.getElementById("radio2").checked = false;
+            document.getElementById("radio3").checked = false;
+            document.getElementById("radio4").checked = false;
+        });
+
+        console.log("que", qobj)
+
+    }
+    render() {
+        var techoptions = []
+        var subtechoptions = []
+        var techdata = []
 
         function ActionbuttonDisplay(cell) {
             return (
@@ -137,26 +222,28 @@ class Technology extends React.Component {
             );
         }
 
-        let subTechDisplay = [], renderSubTechInput;
-        for (let i = 0; i < this.state.subTechInput; i++) {
-            subTechDisplay.push(i);
-        }
+        this.props.technology.map((t) => {
+            let obj = {
+                value: t.techId,
+                label: t.techName
+            }
+            let tobj = {
+                Name: t.techName
+            }
+            techoptions.push(obj)
+            techdata.push(tobj)
+            return true;
+        })
 
-        renderSubTechInput = subTechDisplay.map((value) => {
-            return (
-                <div key={value}>
-                    {value === 0
-                        ? <div>
-                            <i style={{ fontSize: "25px" }} onClick={() => this.addSubTechInput()} className="ni ni-fat-add"></i>
-                            {this.state.subTechInput >= 2
-                                ? <i style={{ fontSize: "25px" }} onClick={() => this.removeSubTechInput()} className="ni ni-fat-delete"></i>
-                                : ""}
-                        </div>
-                        : ""}
-                    <Input type="text" id="technology" placeholder="Sub-Technology" style={{ marginBottom: "5px" }} />
-                </div>
-            );
-        });
+        this.props.subtechnology.map((st) => {
+            let obj = {
+                value: st.subTechId,
+                label: st.subTechName
+            }
+            subtechoptions.push(obj)
+
+            return true;
+        })
 
         return (
             <>
@@ -170,46 +257,14 @@ class Technology extends React.Component {
                                     <h3 className=" mb-0">Technology</h3>
                                 </CardHeader>
                                 <CardBody>
-                                    <i className="ni ni-fat-add" style={{ fontSize: "40px" }} id="plusIcon" onClick={this.plusTechnology}></i>
-                                    <Container id="AddTechForm" hidden style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
-                                        <Form>
-                                            <h3 style={{ marginTop: "6px" }}> Add Technology</h3>
-                                            <FormGroup>
-                                                <Input type="text" id="technology" placeholder="Technology" />
-                                            </FormGroup>
-                                            <FormGroup check style={{ marginTop: "-20px", marginBottom: "15px", fontSize: "15px" }}>
-                                                <Label check>
-                                                    <Input type="checkbox" id="level" checked={this.state.checked} onChange={this.checked.bind(this)} />{' '}
-                                                    Want to add Level?
-                                                </Label>
-                                            </FormGroup>
-                                            <FormGroup>
-                                                <Button id="addTech" onClick={this.addTechnology}>Add</Button>
-                                                <Button id="cancelTech" onClick={this.cancelTechnology}>Cancel</Button>
-                                            </FormGroup>
-                                        </Form>
-                                        <Container id="AddSubTechForm" hidden style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
-                                            <Form>
-                                                <h3 style={{ marginTop: "6px" }}> Add Sub-Technology</h3>
-                                                <FormGroup>
-                                                    {/* <i className="ni ni-fat-add" style={{ fontSize: "35px" }} id="plus"></i> */}
-                                                    {this.state.subTechInput
-                                                        ? <div className='header-center mt10'>
-                                                            {renderSubTechInput}
-                                                        </div> : ""}
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <Button onClick={this.addTechnology}>Add</Button>
-                                                    <Button onClick={this.cancelSubTechnology.bind(this)}>Cancel</Button>
-                                                </FormGroup>
-                                            </Form>
-                                        </Container>
-                                    </Container>
-                                    <BootstrapTable data={users} striped hover>
+                                    <AddTechnology />
+                                    <BootstrapTable data={techdata} striped hover>
                                         <TableHeaderColumn isKey dataField="Name" width="200"
                                             filter={{ type: 'TextFilter' }} dataSort={true}>Name</TableHeaderColumn>
                                         <TableHeaderColumn dataFormat={ActionbuttonDisplay} width="100" >Action</TableHeaderColumn>
                                     </BootstrapTable>
+                                    <Button color="primary" style={{ width: "7%", padding: "10px", marginTop: "10px" }}>Next</Button>{' '}
+                                    <Button color="primary" style={{ width: "7%", padding: "10px", marginTop: "10px" }}>Prev</Button>{' '}
                                 </CardBody>
                             </Card>
                         </div>
@@ -242,16 +297,30 @@ class Technology extends React.Component {
                                         <Row>
                                             <Container>
                                                 <CardBody>
+                                                    {/* {selecttechnology} */}
                                                     <Select
+                                                        name="selecttech"
                                                         placeholder="Select Technology"
-                                                        value={selectedOption}
-                                                        onChange={this.SelectHandleChange}
-                                                        options={options}
+                                                        value={this.state.selectedtech}
+                                                        onChange={this.SelectTechHandleChange}
+                                                        options={techoptions}
                                                     />
                                                     <br />
+                                                    <Select
+                                                        id="selectsubtech"
+                                                        name="selectsubtech"
+                                                        placeholder="Select Sub-Technology"
+                                                        value={this.state.selectedsubtech}
+                                                        hidden
+                                                        onChange={this.SelectSubtechHandleChange}
+                                                        options={subtechoptions}
+                                                    />
+                                                    <br />
+
                                                     <Form>
                                                         <FormGroup>
-                                                            <Input type="text" id="technology" placeholder="Question" onClick={this.questionEditor.bind(this)} />
+                                                            {/* <Input type="text" id="technology" placeholder="Question" onClick={this.questionEditor.bind(this)} /> */}
+                                                            <RichTextBox txttype='que' text="Enter Question" />
                                                         </FormGroup>
                                                         <FormGroup style={{ float: "right", cursor: "pointer" }}>
                                                             <Badge color="primary" pill onClick={this.mcqClick.bind(this)}>MCQ</Badge>{' '}
@@ -263,35 +332,80 @@ class Technology extends React.Component {
                                                                     <tr>
                                                                         <th scope="col">Sr.No</th>
                                                                         <th scope="col">Option</th>
+                                                                        <th scope="col">Text with Image</th>
                                                                         <th scope="col">Answer</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
                                                                         <td>a</td>
-                                                                        <td><Input type="text" placeholder="Option a" /></td>
-                                                                        <td><Input style={{ marginLeft: "20px" }} type="radio" name="radio1" /></td>
+                                                                        <td>
+                                                                            <div style={{ width: '650px' }}>
+                                                                                {(this.state.checked_a)
+                                                                                    ? (<RichTextBox txttype='opt_a' text="Enter Option" />)
+                                                                                    : (<Input type="text" id="op_a" placeholder="Option a" />)}
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <CustomeSwitch
+                                                                                onChange={this.EditToggle_a}
+                                                                                checked={this.state.checked_a} />
+                                                                        </td>
+                                                                        <td><Input value="a" style={{ marginLeft: "20px" }} type="radio" id="radio1" name="radio1" /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>b</td>
-                                                                        <td><Input type="text" placeholder="Option b" /></td>
-                                                                        <td><Input style={{ marginLeft: "20px" }} type="radio" name="radio1" /></td>
+                                                                        <td>
+                                                                            <div style={{ width: '650px' }}>
+                                                                                {(this.state.checked_b)
+                                                                                    ? (<RichTextBox txttype='opt_b' text="Enter Option" />)
+                                                                                    : (<Input type="text" id="op_b" placeholder="Option b" />)}
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <CustomeSwitch
+                                                                                onChange={this.EditToggle_b}
+                                                                                checked={this.state.checked_b} />
+                                                                        </td>
+                                                                        <td><Input value="b" style={{ marginLeft: "20px" }} type="radio" id="radio2" name="radio2" /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>c</td>
-                                                                        <td><Input type="text" placeholder="Option c" /></td>
-                                                                        <td><Input style={{ marginLeft: "20px" }} type="radio" name="radio1" /></td>
+                                                                        <td>
+                                                                            <div style={{ width: '650px' }}>
+                                                                                {(this.state.checked_c)
+                                                                                    ? (<RichTextBox txttype='opt_c' text="Enter Option" />)
+                                                                                    : (<Input type="text" id="op_c" placeholder="Option c" />)}
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <CustomeSwitch
+                                                                                onChange={this.EditToggle_c}
+                                                                                checked={this.state.checked_c} />
+                                                                        </td>
+                                                                        <td><Input value="c" style={{ marginLeft: "20px" }} type="radio" id="radio3" name="radio3" /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>d</td>
-                                                                        <td><Input type="text" placeholder="Option d" /></td>
-                                                                        <td><Input style={{ marginLeft: "20px" }} type="radio" name="radio1" /></td>
+                                                                        <td>
+                                                                            <div style={{ width: '650px' }}>
+                                                                                {(this.state.checked_d)
+                                                                                    ? (<RichTextBox txttype='opt_d' text="Enter Option" />)
+                                                                                    : (<Input type="text" id="op_d" placeholder="Option d" />)}
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <CustomeSwitch
+                                                                                onChange={this.EditToggle_d}
+                                                                                checked={this.state.checked_d} />
+                                                                        </td>
+                                                                        <td><Input value="d" style={{ marginLeft: "20px" }} type="radio" id="radio4" name="radio4" /></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </Table>
                                                             <Input id="fillup" hidden type="text" placeholder="Answer" />
                                                         </div>
-                                                        <Button style={{ float: "right", margin: "15px" }}>Add Question</Button>
+                                                        <Button onClick={this.addQuestion} style={{ float: "right", margin: "15px" }}>Add Question</Button>
                                                     </Form>
                                                 </CardBody>
                                             </Container>
@@ -303,10 +417,20 @@ class Technology extends React.Component {
                                             <Col sm="8">
                                                 <Card body>
                                                     <Select
+                                                        name="fselecttech"
                                                         placeholder="Select Technology"
-                                                        value={selectedOption}
-                                                        onChange={this.SelectHandleChange}
-                                                        options={options}
+                                                        value={this.state.selectedtech}
+                                                        onChange={this.SelectTechHandleChange}
+                                                        options={techoptions}
+                                                    /> <br />
+                                                    <Select
+                                                        id="fselectsubtech"
+                                                        name="fselectsubtech"
+                                                        placeholder="Select Sub-Technology"
+                                                        value={this.state.selectedsubtech}
+                                                        hidden
+                                                        onChange={this.SelectSubtechHandleChange}
+                                                        options={subtechoptions}
                                                     />
                                                     <input type="file" onChange={this.fileHandler.bind(this)} style={{ margin: "20px" }} />
                                                     <Button>Upload</Button>
@@ -327,4 +451,17 @@ class Technology extends React.Component {
     }
 }
 
-export default Technology;
+const mapStateToProps = (state) => {
+    return {
+        technology: state.tech.technology,
+        subtechnology: state.tech.subtechnology
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        techaction: bindActionCreators(techAction, dispatch),
+        queaction: bindActionCreators(queAction, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Technology);

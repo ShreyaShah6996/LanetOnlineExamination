@@ -12,7 +12,7 @@ import {
   Row,
   Col
 } from "reactstrap";
-import lanetlogo from '../../assets/img/brand/logo_lanetteam.png';
+import lanetlogo from '../../assets/img/brand/logo.png';
 
 class AdminNavbar extends React.Component {
   render() {
@@ -23,10 +23,9 @@ class AdminNavbar extends React.Component {
           expand="md"
         >
           <Container className="px-4">
-            <NavbarBrand to="/" tag={Link}>
+            <NavbarBrand to="/" tag={Link} style={{width:"100%",textAlign:"center",letterSpacing:"3px"}}>
               {/* <img alt="..." src={require("assets/img/brand/argon-react-white.png")} /> */}
-              <img src={lanetlogo} alt="lanet logo" /><br />
-              Online Examination
+              <img src={lanetlogo} alt="lanet logo" style={{height:"auto",width:"21%"}}/>
             </NavbarBrand>
             <button className="navbar-toggler" id="navbar-collapse-main">
               <span className="navbar-toggler-icon" />
