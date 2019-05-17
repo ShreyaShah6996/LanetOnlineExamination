@@ -327,7 +327,7 @@ class Technology extends React.Component {
                                                             <Badge color="primary" pill onClick={this.fillUpClick.bind(this)}>Fill Up</Badge>
                                                         </FormGroup>
                                                         <div>
-                                                            <Table id="mcq">
+                                                            <Table id="mcq" responsive>
                                                                 <thead className="thead-light">
                                                                     <tr>
                                                                         <th scope="col">Sr.No</th>
@@ -351,7 +351,7 @@ class Technology extends React.Component {
                                                                                 onChange={this.EditToggle_a}
                                                                                 checked={this.state.checked_a} />
                                                                         </td>
-                                                                        <td><Input value="a" style={{ marginLeft: "20px" }} type="radio" id="radio1" name="radio1" /></td>
+                                                                        <td><Input value="a" type="radio" style={{position:"unset",margin:" 0 45%"}} id="radio1" name="radio1" /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>b</td>
@@ -367,7 +367,7 @@ class Technology extends React.Component {
                                                                                 onChange={this.EditToggle_b}
                                                                                 checked={this.state.checked_b} />
                                                                         </td>
-                                                                        <td><Input value="b" style={{ marginLeft: "20px" }} type="radio" id="radio2" name="radio2" /></td>
+                                                                        <td><Input value="b"  type="radio" style={{position:"unset",margin:" 0 45%"}} id="radio2" name="radio2" /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>c</td>
@@ -383,7 +383,7 @@ class Technology extends React.Component {
                                                                                 onChange={this.EditToggle_c}
                                                                                 checked={this.state.checked_c} />
                                                                         </td>
-                                                                        <td><Input value="c" style={{ marginLeft: "20px" }} type="radio" id="radio3" name="radio3" /></td>
+                                                                        <td><Input value="c" type="radio" style={{position:"unset",margin:" 0 45%"}} id="radio3" name="radio3" /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>d</td>
@@ -399,7 +399,7 @@ class Technology extends React.Component {
                                                                                 onChange={this.EditToggle_d}
                                                                                 checked={this.state.checked_d} />
                                                                         </td>
-                                                                        <td><Input value="d" style={{ marginLeft: "20px" }} type="radio" id="radio4" name="radio4" /></td>
+                                                                        <td><Input value="d" style={{position:"unset",margin:" 0 45%"}} type="radio" id="radio4" name="radio4" /></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </Table>

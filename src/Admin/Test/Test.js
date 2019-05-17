@@ -172,66 +172,59 @@ class Test extends React.Component {
 
     TechRatioChangehandler(techId, e) {
         this.setState({errors: {}})
-        // var find = findIndex(techRatio, (x, value) => { return +Object.keys(x)[0] === techId });
-        // if (find !== -1 || find === 0) {
-        //     techRatio[find][e.target.name] = e.target.value;
-        // } else {
-        //     techRatio.push({ [e.target.name]: e.target.value })
-        // }
-        let index;
-        if (techRatio.filter((r, i) => {
-            if (r[techId]) {
-                index = i;
-                return r[techId];
-            }
-            return null
-        }).length > 0)
-            techRatio[index][e.target.name] = e.target.value
-        else
-            techRatio.push({
-                [e.target.name]: e.target.value
-            })
+        var find = findIndex(techRatio, (x, value) => { return +Object.keys(x)[0] === techId });
+        if (find !== -1 || find === 0) {
+            techRatio[find][e.target.name] = e.target.value;
+        } else {
+            techRatio.push({ [e.target.name]: e.target.value })
+        }
+        // let options = [];
+        // let index;
+        // this.state.selectedOption.map(option => {
+        //     // options.push(option.value)
+        //     techRatio.filter(tech => {
+        //         debugger
+        //         if(option.value !== parseInt(Object.keys(tech))){
+        //             debugger
+        //              index = findIndex(techRatio);
+        //              techRatio.splice(index);
+        //         }
+        //     })
+        // })
+        //
+        // console.log(options);
+        // console.log("techno=====",techRatio)
     }
 
     SubTechRatioChangehandler(techId, e) {
         this.setState({errors: {}})
-        // var find = findIndex(subTechRatio, (x, value) => { return +Object.keys(x)[0] === techId });
-        // if (find !== -1 || find === 0) {
-        //     subTechRatio[find][techId][e.target.name] = e.target.value;
-        // } else {
-        //     subTechRatio.push({
-        //         [techId]: { [e.target.name]: e.target.value }
-        //     })
-        // }
-
-        let index;
-        if (subTechRatio.filter((r, i) => {
-            if (r[techId]) {
-                index = i;
-                return r[techId];
-            }
-            return null
-        }).length > 0)
-            subTechRatio[index][techId][e.target.name] = e.target.value
-        else
+        var find = findIndex(subTechRatio, (x, value) => { return +Object.keys(x)[0] === techId });
+        if (find !== -1 || find === 0) {
+            subTechRatio[find][techId][e.target.name] = e.target.value;
+        } else {
             subTechRatio.push({
-                [techId]: {
-                    [e.target.name]: e.target.value
-                }
+                [techId]: { [e.target.name]: e.target.value }
             })
+        }
     }
 
     SelectHandleChange = (selectedOption) => {
+        // debugger;
         this.setState({errors: {}})
         let extra = this;
+
         if (selectedOption.length < 1) {
             document.getElementById("allTech").hidden = true;
-            techRatio = [];
-            subTechRatio = [];
-        } else {
             allTech = [];
             techRatio = [];
             subTechRatio = [];
+            this.setState({test:{
+                ...this.state.test,
+                    ratio:[]}})
+        } else {
+            allTech = [];
+            // techRatio = [];
+            // subTechRatio = [];
             document.getElementById("allTech").hidden = false;
             selectedOption.map(option => {
                 if (option.label === "All") {
@@ -261,7 +254,7 @@ class Test extends React.Component {
                                         </tr>
                                     )
                                     return null;
-                                })
+                                });
                             } else {
                                 allTech.push(<tr key={i}>
                                         <td> {technology.techName} </td>
@@ -285,6 +278,7 @@ class Test extends React.Component {
                         })
                     }
                 } else {
+                    // debugger
                     if (extra.props.getTechnology && extra.props.getTechnology.length !== 0) {
                         extra.props.getTechnology.map((technology, i) => {
                             if (option.label === technology.techName) {
@@ -344,6 +338,7 @@ class Test extends React.Component {
             })
         }
         extra.setState({selectedOption});
+        // console.log("tech",techRatio)
     }
 
     onInputChangeHandler(e) {
@@ -358,6 +353,7 @@ class Test extends React.Component {
 
     btnAddRatio(e) {
         let techId = [];
+        // console.log("techRatio====",techRatio)
         techRatio.map(techratio => {
             return techId.push({
                 techId: parseInt(Object.keys(techratio).toString()),
@@ -386,6 +382,7 @@ class Test extends React.Component {
             })
         })
         let Ratio = techId.concat(b);
+        // console.log("Ratio===========",Ratio);
         if (Ratio.length <= 0) {
             this.setState({
                 ...this.state.errors,
@@ -546,6 +543,7 @@ class Test extends React.Component {
     }
 
     render() {
+        // console.log(this.state)
         const {selectedOption} = this.state;
         let techOptions = [];
         let testData = [];
@@ -642,8 +640,8 @@ class Test extends React.Component {
                                                     <ButtonGroup> {(this.state.offset !== 0) ?
                                                         <Button color="primary"
                                                                 onClick={this.btnNextPrevClick.bind(this)}
-                                                                name="Prev"> Prev </Button> : null} & nbsp; & nbsp; &
-                                                        nbsp; {noMoreData >= this.state.recordPerPage ?
+                                                                name="Prev"> Prev </Button> : null}{' '}
+                                                                {noMoreData >= this.state.recordPerPage ?
                                                             <Button color="primary"
                                                                     onClick={this.btnNextPrevClick.bind(this)}
                                                                     name="Next"> Next </Button> : null
@@ -727,7 +725,7 @@ class Test extends React.Component {
                                                     <h3> Ratio for Technology </h3>
                                                     <Form>
                                                         <Table style={{listStyle: "none", padding: "0", margin: "0"}}>
-                                                            <tbody> {allTech} </tbody>
+                                                            <tbody>{allTech}</tbody>
                                                         </Table>
                                                         <span style={{color: "red"}}> {this.state.errors.ratio} </span>
                                                         <br/>

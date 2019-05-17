@@ -127,7 +127,27 @@ span.ant-time-picker {
     margin-right: 20px;
     width: 166px;
 }
+.user_serch input.ant-input{
+    padding: 21px;
+}
+.user_serch button.ant-btn.ant-input-search-button.ant-btn-primary{
+    padding: 21px;
+}
+.user_serch i.anticon.anticon-search{
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    color: #000;
+}
 
+.user_serch .ant-btn-primary{
+    background-color: #c9c9c9;
+    border-color: #c9c9c9;
+}
+.user_serch .ant-btn-primary:hover{
+    background-color: #c9c9c9;
+    border-color: #c9c9c9;
+}
 @media only screen and (min-width:320px) and (max-width:1024px) {
     .reg-frm {
         padding: 0;

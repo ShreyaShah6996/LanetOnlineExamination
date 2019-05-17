@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { Popconfirm, Input as antInput } from 'antd';
 import 'antd/dist/antd.css';
+import '../../assets/css/styles.css';
 import Header from "components/Headers/Header.jsx";
 import * as userAction from '../../Action/userAction';
 import PDFGenerator from './pdfGenerator';
@@ -100,7 +101,7 @@ class User extends React.Component {
                                 <CardHeader className=" bg-transparent">
                                     <h3 className=" mb-0">User</h3>
                                 </CardHeader>
-                                <Container style={{ marginTop: "5px", marginLeft: "10px" }}>
+                                <Container style={{ marginTop: "5px", marginLeft: "10px",display: "flex "}}>
                                     <Input type="select" name="select" style={{ width: "8%" }} onChange={this.recordPerPageChangeHandler.bind(this)} >
                                         <option value="5">5</option>
                                         <option value="10">10</option>
@@ -109,9 +110,9 @@ class User extends React.Component {
                                         <option value="100">100</option>
                                         <option value="All">All</option>
                                     </Input>
+                                    <Search placeholder="input search text" className="user_serch" style={{ width: "30%", marginLeft: "24px"}} onSearch={value => console.log(value)} enterButton />
                                 </Container>
-                                <br />
-                                <Search placeholder="input search text"  style={{ width: "30%", marginLeft: "24px" }} onSearch={value => console.log(value)} enterButton />
+
                                 
                                 {/* <Input style={{ width: "30%", marginLeft: "24px" }} type="text" placeholder="Search" /> */}
                                 <PDFGenerator data={this.props.get_limited_user} />
