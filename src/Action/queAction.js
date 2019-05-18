@@ -42,7 +42,7 @@ export const getAllQuestion = () => {
             })
             .catch((error) => {
                 if (error) {
-                    
+                    debugger
                     dispatch({
                         type: GET_ALL_QUESTION_FAILED,
                         error: "Invalid data"

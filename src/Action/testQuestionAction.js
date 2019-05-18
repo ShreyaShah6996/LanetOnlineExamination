@@ -20,7 +20,7 @@ export const getTestQuestion = (testId) => {
             .catch((error) => {
                 dispatch({
                     type: GET_TEST_QUESTION_FAILED,
-                    test_question_error: error.response.data.error
+                    test_question_error: error.response && error.response.data.error
                 })
             })
     }
