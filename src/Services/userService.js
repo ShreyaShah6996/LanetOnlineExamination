@@ -11,3 +11,7 @@ export function getAllUser() {
 export function deleteUser(userId) {
     return BaseService.delete('api/user/delete/' + userId);
 }
+
+export function search(searchText) {
+    return BaseService.post('api/user/search/Term',searchText);
+}

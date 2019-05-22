@@ -11,6 +11,7 @@ import Header from "components/Headers/Header.jsx";
 import * as userAction from '../../Action/userAction';
 import PDFGenerator from './pdfGenerator';
 const Search = antInput.Search;
+
 class User extends React.Component {
     constructor(props) {
         super(props);
@@ -69,6 +70,13 @@ class User extends React.Component {
         this.props.action.UserAction.deleteUser(userId, this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection)
     }
 
+    btnSearch = (searchText,e) => {
+        if(searchText)
+            this.props.action.UserAction.search({"searchTerm":searchText});
+        else
+            this.props.action.UserAction.getUser(this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection);
+    }
+
     render() {
         let users = [];
         let noMoreData = 0;
@@ -112,7 +120,8 @@ class User extends React.Component {
                                     </Input>
                                     <Search placeholder="input search text" className="user_serch" style={{ width: "30%", marginLeft: "24px"}} onSearch={value => console.log(value)} enterButton />
                                 </Container>
-
+                                <br />
+                                <Search placeholder="input search text"  style={{ width: "30%", marginLeft: "24px" }} onSearch={searchTerm => this.btnSearch(searchTerm)} enterButton />
                                 
                                 {/* <Input style={{ width: "30%", marginLeft: "24px" }} type="text" placeholder="Search" /> */}
                                 <PDFGenerator data={this.props.get_limited_user} />
@@ -125,7 +134,6 @@ class User extends React.Component {
                                             filter={{ type: 'TextFilter' }} filterFormatted dataFormat={collegeFunction}>College</TableHeaderColumn>
                                         <TableHeaderColumn dataField="createdDate" width="150" dataFormat={dateFormatter}
                                             dataSort={true}>Registered Date</TableHeaderColumn>
-                                        {/* filter={{ type: 'DateFilter' }} */}
                                         <TableHeaderColumn dataField="contactNo" width='180'>Contact</TableHeaderColumn>
                                         <TableHeaderColumn dataField="userId" formatExtraData={this}
                                             dataFormat={this.ActionbuttonDisplay} width="100" >Action</TableHeaderColumn>

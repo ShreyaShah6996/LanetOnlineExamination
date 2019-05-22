@@ -27,7 +27,7 @@ import DatePicker from "react-datepicker";
 import {TimePicker, notification, Popconfirm} from 'antd';
 import moment from 'moment';
 import Switch from "react-switch";
-import {forEach, includes, map, findIndex} from 'lodash';
+import {forEach, includes, map, findIndex } from 'lodash';
 
 import 'react-bootstrap-table/dist/react-bootstrap-table.min.css';
 import "react-datepicker/dist/react-datepicker.css";
@@ -75,7 +75,9 @@ class Test extends React.Component {
             recordPerPage: 5,
             offset: 0,
             fieldName: 'testId',
-            sortDirection: 'ASC'
+            sortDirection: 'ASC',
+            showRatioForTech: false,
+            selectAll:false
         };
 
         this.TestTabToggle = this.TestTabToggle.bind(this);
@@ -178,22 +180,6 @@ class Test extends React.Component {
         } else {
             techRatio.push({ [e.target.name]: e.target.value })
         }
-        // let options = [];
-        // let index;
-        // this.state.selectedOption.map(option => {
-        //     // options.push(option.value)
-        //     techRatio.filter(tech => {
-        //         debugger
-        //         if(option.value !== parseInt(Object.keys(tech))){
-        //             debugger
-        //              index = findIndex(techRatio);
-        //              techRatio.splice(index);
-        //         }
-        //     })
-        // })
-        //
-        // console.log(options);
-        // console.log("techno=====",techRatio)
     }
 
     SubTechRatioChangehandler(techId, e) {
@@ -208,31 +194,45 @@ class Test extends React.Component {
         }
     }
 
-    SelectHandleChange = (selectedOption) => {
-        // debugger;
-        this.setState({errors: {}})
-        let extra = this;
+    updateTestRatio = (selectedOption) => {
+        const { test: { ratio = [] } } = this.state;
+        let selectedOptionValue = [];
+        selectedOption.forEach(_ => {
+            selectedOptionValue.push(_.value);
+        });
+        ratio.forEach(_=>{
+            if(!includes(selectedOptionValue, _.techId)){
+                const techRatioIndex = findIndex(ratio, _);
+                ratio.splice(techRatioIndex, 1);
+            }
+        })
+        this.setState({test : { ...this.state.test, ratio }, selectedOption,selectAll:false})
+    };
 
+    SelectHandleChange = (selectedOption) => {
+        debugger
+        const { test: { ratio = [] } } = this.state;
+        ratio.length && this.updateTestRatio(selectedOption);
+        debugger
+        this.setState({errors: {}});
+        let extra = this;
         if (selectedOption.length < 1) {
-            document.getElementById("allTech").hidden = true;
+            techRatio = [];
+            subTechRatio = [];
+            this.setState({showRatioForTech: false,selectAll:false});
+        } else {
             allTech = [];
             techRatio = [];
             subTechRatio = [];
-            this.setState({test:{
-                ...this.state.test,
-                    ratio:[]}})
-        } else {
-            allTech = [];
-            // techRatio = [];
-            // subTechRatio = [];
-            document.getElementById("allTech").hidden = false;
+            this.setState({showRatioForTech: true});
             selectedOption.map(option => {
                 if (option.label === "All") {
+                    this.setState({selectAll:true});
                     selectedOption = selectedOption.filter((t) => {
                         return t.label === option.label
                     })
                     allTech = [];
-                    if (extra.props.getTechnology && extra.props.getTechnology.length !== 0) {
+                    if (extra.props.getTechnology.length) {
                         extra.props.getTechnology.map((technology, i) => {
                             if (technology.level === 1) {
                                 technology.SubTechnologies.map((subTech, j) => {
@@ -254,7 +254,7 @@ class Test extends React.Component {
                                         </tr>
                                     )
                                     return null;
-                                });
+                                })
                             } else {
                                 allTech.push(<tr key={i}>
                                         <td> {technology.techName} </td>
@@ -278,8 +278,8 @@ class Test extends React.Component {
                         })
                     }
                 } else {
-                    // debugger
-                    if (extra.props.getTechnology && extra.props.getTechnology.length !== 0) {
+                    this.setState({selectAll:false})
+                    if (extra.props.getTechnology && extra.props.getTechnology.length) {
                         extra.props.getTechnology.map((technology, i) => {
                             if (option.label === technology.techName) {
                                 if (technology.level === 1) {
@@ -338,7 +338,6 @@ class Test extends React.Component {
             })
         }
         extra.setState({selectedOption});
-        // console.log("tech",techRatio)
     }
 
     onInputChangeHandler(e) {
@@ -353,7 +352,6 @@ class Test extends React.Component {
 
     btnAddRatio(e) {
         let techId = [];
-        // console.log("techRatio====",techRatio)
         techRatio.map(techratio => {
             return techId.push({
                 techId: parseInt(Object.keys(techratio).toString()),
@@ -382,7 +380,6 @@ class Test extends React.Component {
             })
         })
         let Ratio = techId.concat(b);
-        // console.log("Ratio===========",Ratio);
         if (Ratio.length <= 0) {
             this.setState({
                 ...this.state.errors,
@@ -394,7 +391,7 @@ class Test extends React.Component {
             let totalRatioCount = 0;
             let rat = Ratio;
             rat.map(r => {
-                if (r.subTech && r.subTech.length !== 0) {
+                if (r.subTech && r.subTech.length) {
                     r.subTech.map(sub => {
                         return totalRatioCount += sub.ratio
                     })
@@ -411,7 +408,7 @@ class Test extends React.Component {
                 this.setState({
                     test: {
                         ...this.state.test,
-                        ratio: JSON.stringify(Ratio)
+                        ratio: Ratio
                     }
                 })
                 this.openNotificationWithIcon('success', "Ratio Added");
@@ -423,7 +420,15 @@ class Test extends React.Component {
         e.preventDefault();
         let fieldsErrors = {};
         const {test, errors, selectedOption} = this.state;
-        if (test.testName === "" && test.totalQuestion === 0 && test.date === "" && test.duration === "" && test.professor === "" && test.description === "" && test.token === "" && selectedOption === null) {
+        if (
+            test.testName === "" &&
+            test.totalQuestion === 0 &&
+            test.date === "" &&
+            test.duration === "" &&
+            test.professor === "" &&
+            test.description === "" &&
+            test.token === "" &&
+            selectedOption === null) {
             this.openNotificationWithIcon('error', "Please Fill the Details to add Test");
         } else {
             //token
@@ -493,7 +498,7 @@ class Test extends React.Component {
                         date: test.date,
                         duration: test.duration,
                         professor: test.professor,
-                        ratio: test.ratio,
+                        ratio: JSON.stringify(test.ratio),
                         token: test.token
                     }
                 } else {
@@ -503,11 +508,11 @@ class Test extends React.Component {
                         totalQuestion: test.totalQuestion,
                         date: test.date,
                         professor: test.professor,
-                        ratio: test.ratio,
+                        ratio: JSON.stringify(test.ratio),
                         token: test.token
                     }
                 }
-                if (test.ratio && test.ratio.length !== 0) {
+                if (test.ratio && test.ratio.length) {
 
                     this.setState({test: {}, selectedOption: null})
                     this.props.action.TestAction.addTest(testData);
@@ -543,21 +548,31 @@ class Test extends React.Component {
     }
 
     render() {
-        // console.log(this.state)
-        const {selectedOption} = this.state;
+        const {selectedOption, showRatioForTech,selectAll } = this.state;
+        const { getTechnology = [], getTest = [] } = this.props;
         let techOptions = [];
         let testData = [];
         let noMoreData = 0;
 
-        if (this.props.getTechnology && this.props.getTechnology.length !== 0) {
-            this.props.getTechnology.map(technology => {
-                return techOptions.push({value: technology.techId, label: technology.techName})
-            })
+        if(selectAll){
+            if (getTechnology.length) {
+                getTechnology.map(technology => {
+                    return techOptions.push({value: technology.techId, label: technology.techName,disabled:'true'})
+                })
+            }
         }
-        techOptions.push({value: this.props.getTechnology.length + 1, label: 'All'});
+        else {
+            if (getTechnology.length) {
+                getTechnology.map(technology => {
+                    return techOptions.push({value: technology.techId, label: technology.techName})
+                })
+            }
+        }
 
-        if (this.props.getTest && this.props.getTest.length !== 0) {
-            this.props.getTest.map((test, key) => {
+        techOptions.push({value: getTechnology.length + 1, label: 'All'});
+
+        if (getTest.length) {
+            getTest.map((test, key) => {
                 noMoreData = key + 1;
                 return testData.push(test);
             })
@@ -641,7 +656,7 @@ class Test extends React.Component {
                                                         <Button color="primary"
                                                                 onClick={this.btnNextPrevClick.bind(this)}
                                                                 name="Prev"> Prev </Button> : null}{' '}
-                                                                {noMoreData >= this.state.recordPerPage ?
+                                                      {noMoreData >= this.state.recordPerPage ?
                                                             <Button color="primary"
                                                                     onClick={this.btnNextPrevClick.bind(this)}
                                                                     name="Next"> Next </Button> : null
@@ -660,7 +675,9 @@ class Test extends React.Component {
                                                                     value={selectedOption}
                                                                     onChange={this.SelectHandleChange.bind(this)}
                                                                     options={techOptions}
-                                                                    isMulti={true}/>
+                                                                    isMulti={true}
+                                                                    isOptionDisabled={(option)=>option.disabled === 'true'}
+                                                                     />
                                                             <span
                                                                 style={{color: "red"}}> {this.state.errors.selectedOption} </span>
                                                         </FormGroup>
@@ -720,12 +737,12 @@ class Test extends React.Component {
                                                     </Form>
                                                 </Card>
                                             </Col>
-                                            <Col sm="6" id="allTech" hidden>
+                                            {showRatioForTech && <Col sm="6" id="allTech">
                                                 <Card body>
                                                     <h3> Ratio for Technology </h3>
                                                     <Form>
                                                         <Table style={{listStyle: "none", padding: "0", margin: "0"}}>
-                                                            <tbody>{allTech}</tbody>
+                                                            <tbody> {allTech} </tbody>
                                                         </Table>
                                                         <span style={{color: "red"}}> {this.state.errors.ratio} </span>
                                                         <br/>
@@ -733,7 +750,7 @@ class Test extends React.Component {
                                                             Ratio </Button>
                                                     </Form>
                                                 </Card>
-                                            </Col>
+                                            </Col>}
                                         </Row>
                                     </TabPane>
                                 </TabContent>

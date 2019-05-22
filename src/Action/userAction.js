@@ -1,5 +1,5 @@
 import * as userService from '../Services/userService';
-import { GET_USER, GET_USER_FAILED, DELETE_USER, DELETE_USER_FAILED } from '../Reducer/userReducer';
+import { GET_USER, GET_USER_FAILED, DELETE_USER, DELETE_USER_FAILED, SEARCH, SEARCH_FAILED } from '../Reducer/userReducer';
 
 export const getUser = (pageNo, recordPerPage, fieldName, sortDirection) => {
     return dispatch => {
@@ -64,3 +64,24 @@ export const deleteUser = (userId, pageNo, recordPerPage, fieldName, sortDirecti
         })
     }
 };
+
+export const search = (searchTerm) => {
+    debugger
+    return dispatch => {
+        userService.search(searchTerm)
+            .then((response) => {
+                if (response.status === 200) {
+                    dispatch({
+                        type: SEARCH,
+                        searchResponse: response.data
+                    })
+                }
+            })
+            .catch((error) => {
+                dispatch({
+                    type: SEARCH_FAILED,
+                    searchError: error.response.data.error
+                })
+            })
+    }
+}

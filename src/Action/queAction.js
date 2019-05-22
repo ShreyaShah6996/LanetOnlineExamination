@@ -42,7 +42,6 @@ export const getAllQuestion = () => {
             })
             .catch((error) => {
                 if (error) {
-                    
                     dispatch({
                         type: GET_ALL_QUESTION_FAILED,
                         error: "Invalid data"
