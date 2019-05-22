@@ -141,7 +141,7 @@ class TestQuestion extends React.Component {
                                 quesList.push(ques);
                                 return testQuestion.push(<tr key={key}>
                                     <td>{key + 1}</td>
-                                    <td><Input type="textarea" disabled value={allques.question.text} /></td>
+                                    <td><Input type="textarea" disabled value={allques.question} /></td>
                                     <td><Input style={{ marginLeft: "28px" }} onChange={this.chkCompulsoryHandler.bind(this,ques)} type="checkbox" defaultChecked={ques.Coumpulsory} /></td>
                                     <td><Input type="number" onChange={this.marksChangeHandler.bind(this,ques)} defaultValue={ques.marks} /></td>
                                     <td><Input type="number" onChange={this.negativeMarksChangeHandler.bind(this,ques)} defaultValue={ques.negativeMarks} /></td>

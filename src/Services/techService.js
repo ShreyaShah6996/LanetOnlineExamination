@@ -4,7 +4,9 @@ import BaseService from './baseService';
 export function GetTechnology() {
     return BaseService.get('api/technology');
 }
-
+export function GetLimitedTechnology(pageNo, recordPerPage, fieldName, sortDirection) {
+    return BaseService.get('/api/technology/' + pageNo + '/' + recordPerPage + '/' + fieldName + '/' + sortDirection);
+}
 export function GetSubtechnology(techId) {
     return BaseService.get('api/subTechnology/tech/'+techId);
 }

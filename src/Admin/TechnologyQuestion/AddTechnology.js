@@ -220,7 +220,6 @@ class AddTechnology extends Component {
                 level: l,
                 subTechnologies: this.state.subtechnology
             }
-            console.log("add..", obj)
             if (this.state.isedit) {
                 this.setState({ flag: false })
                 this.props.techaction.EditTechnologyAction(this.state.editdata.techId, obj);
@@ -303,8 +302,6 @@ class AddTechnology extends Component {
     }
 
     render() {
-        console.log("ishide", this.state.ishide)
-
         let subTechDisplay = [], renderSubTechInput;
         for (let i = 0; i < this.state.subTechInput; i++) {
             subTechDisplay.push(i);
@@ -334,43 +331,43 @@ class AddTechnology extends Component {
 
         return (
             <>
-                <i className="ni ni-fat-add" hidden={this.state.ishide.plusIcon} style={{ fontSize: "40px" }} id="plusIcon" onClick={this.plusTechnology}></i>
-                <Container id="AddTechForm" hidden={this.state.ishide.AddTechForm} style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
+            <i className="ni ni-fat-add" hidden={this.state.ishide.plusIcon} style={{ fontSize: "40px" }} id="plusIcon" onClick={this.plusTechnology}></i>
+            <Container id="AddTechForm" hidden={this.state.ishide.AddTechForm} style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
+                <Form>
+                    <h3 style={{ marginTop: "6px" }}>{this.props.isedit?"Update Technology":"Add Technology"} </h3>
+                    <FormGroup>
+                        <Input type="text" id="technology" name="technology" value={this.state.technology} placeholder="Technology" onChange={this.onChangeTechnology.bind(this)} />
+                    </FormGroup>
+                    <FormGroup check style={{ marginTop: "10px", marginBottom: "15px", fontSize: "15px" }}>
+                        <Label check>
+                            <Input type="checkbox" id="level" checked={this.state.checked} onChange={this.checked.bind(this)} disabled={this.state.ishide.level} />{' '}
+                            <div style={{ marginLeft: '20px' }}>Want to add Level?</div>
+                        </Label>
+                    </FormGroup>
+                    <FormGroup>
+
+                        <Button id="addTech"  hidden={this.state.ishide.addTech} onClick={this.addTechnology}>{this.state.isedit ? ("Edit") : ("Add")}</Button>
+
+                        <Button id="cancelTech" hidden={this.state.ishide.cancelTech} onClick={this.cancelTechnology}>Cancel</Button>
+                    </FormGroup>
+                </Form>
+                <Container id="AddSubTechForm" hidden={this.state.ishide.AddSubTechForm} style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
                     <Form>
-                        <h3 style={{ marginTop: "6px" }}> Add Technology</h3>
+                        <h3 style={{ marginTop: "6px" }}>{this.props.isedit?"Update Sub-Technology":"Add Sub-Technology"}</h3>
                         <FormGroup>
-                            <Input type="text" id="technology" name="technology" value={this.state.technology} placeholder="Technology" onChange={this.onChangeTechnology.bind(this)} />
-                        </FormGroup>
-                        <FormGroup check style={{ marginTop: "10px", marginBottom: "15px", fontSize: "15px" }}>
-                            <Label check>
-                                <Input type="checkbox" id="level" checked={this.state.checked} onChange={this.checked.bind(this)} disabled={this.state.ishide.level} />{' '}
-                                <div style={{ marginLeft: '20px' }}>Want to add Level?</div>
-                            </Label>
+                            {this.state.subTechInput
+                                ? <div className='header-center mt10'>
+                                    {renderSubTechInput}
+                                </div> : ""}
                         </FormGroup>
                         <FormGroup>
+                            <Button onClick={this.addTechnology}>{this.state.isedit ? ("Edit") : ("Add")}</Button>
 
-                            <Button id="addTech"  hidden={this.state.ishide.addTech} onClick={this.addTechnology}>{this.state.isedit ? ("Edit") : ("Add")}</Button>
-
-                            <Button id="cancelTech" hidden={this.state.ishide.cancelTech} onClick={this.cancelTechnology}>Cancel</Button>
+                            <Button onClick={this.cancelSubTechnology.bind(this)}>Cancel</Button>
                         </FormGroup>
                     </Form>
-                    <Container id="AddSubTechForm" hidden={this.state.ishide.AddSubTechForm} style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
-                        <Form>
-                            <h3 style={{ marginTop: "6px" }}> Add Sub-Technology</h3>
-                            <FormGroup>
-                                {this.state.subTechInput
-                                    ? <div className='header-center mt10'>
-                                        {renderSubTechInput}
-                                    </div> : ""}
-                            </FormGroup>
-                            <FormGroup>
-                                <Button onClick={this.addTechnology}>{this.state.isedit ? ("Edit") : ("Add")}</Button>
-
-                                <Button onClick={this.cancelSubTechnology.bind(this)}>Cancel</Button>
-                            </FormGroup>
-                        </Form>
-                    </Container>
                 </Container>
+            </Container>
 
 
             </>

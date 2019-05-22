@@ -1,15 +1,15 @@
 import 'react-bootstrap-table/dist/react-bootstrap-table.min.css';
 
+import { Popconfirm } from 'antd';
 import Header from "components/Headers/Header.jsx";
 import React from "react";
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { connect } from 'react-redux'
-import { Card, CardBody, CardHeader, Container, Row, Button } from "reactstrap";
+import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Container, Input, Row } from "reactstrap";
 import { bindActionCreators } from 'redux';
 import * as techAction from '../../Action/techAction'
 import AddQuestions from './AddQuestions'
 import AddTechnology from './AddTechnology'
-import { Popconfirm } from 'antd';
 
 
 class Technology extends React.Component {
@@ -21,15 +21,46 @@ class Technology extends React.Component {
             rows: [],
             isedit: false,
             editdata: '',
+            recordPerPage: 5,
+            offset: 0,
+            fieldName: 'techId',
+            sortDirection: 'ASC'
         };
         this.toggle = this.toggle.bind(this);
 
     }
 
     componentDidMount() {
-        this.props.techaction.GetTechnologyAction()
+        this.props.techaction.GetLimitedTechnologyAction(this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection);
     }
-
+    getTechnologies=(offset, recordPerPage, fieldName, sortDirection)=>{
+        this.props.techaction.GetLimitedTechnologyAction(offset, recordPerPage, fieldName, sortDirection);
+    }
+    recordPerPageChangeHandler=(e)=>{
+        let recordPerPage = e.target.value;
+        let offset = 0;
+        if (recordPerPage !== 'All') {
+            document.getElementById("PrevNext").hidden = false;
+            this.setState({ recordPerPage, offset });
+            this.getTechnologies(offset, recordPerPage, this.state.fieldName, this.state.sortDirection);
+        }
+        else {
+            document.getElementById("PrevNext").hidden = true;
+            this.props.techaction.GetTechnologyAction();
+        }
+    }
+    btnNextPrevClick(e) {
+        let recordPerPage = this.state.recordPerPage;
+        let offset = 0;
+        if (e.target.name === "Prev") {
+            offset = this.state.offset - this.state.recordPerPage;
+        }
+        else if (e.target.name === "Next") {
+            offset = this.state.offset + this.state.recordPerPage;
+        }
+        this.setState({ offset });
+        this.getTechnologies(offset, recordPerPage, this.state.fieldName, this.state.sortDirection);
+    }
     toggle() {
         this.setState(prevState => ({
             isedit: !prevState.isedit
@@ -42,7 +73,9 @@ class Technology extends React.Component {
         })
     }
     DeleteTechnology = (techId, e) => {
-        this.props.techaction.DeleteTechnologyAction(techId);
+        this.props.techaction.DeleteTechnologyAction(techId).then((res)=>{
+            this.props.techaction.GetLimitedTechnologyAction(this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection);
+        })
     }
     ActionbuttonDisplay = (cell, rowData, extradata) => {
         return (
@@ -55,6 +88,14 @@ class Technology extends React.Component {
         );
     }
     render() {
+        let techdata = [];
+        let noMoreData = 0;
+        if (this.props.technology && this.props.technology.length !== 0) {
+            this.props.technology.map((tech, key) => {
+                noMoreData = key + 1;
+                return techdata.push(tech);
+            })
+        }
         return (
             <div>
                 <Header />
@@ -65,17 +106,36 @@ class Technology extends React.Component {
                                 <CardHeader className=" bg-transparent">
                                     <h3 className=" mb-0">Technology</h3>
                                 </CardHeader>
+
                                 <CardBody>
                                     <AddTechnology isedit={this.state.isedit} editdata={this.state.editdata} toggle={this.toggle} />
-                                    <BootstrapTable data={this.props.technology} striped hover>
+                                    <Container style={{ marginTop: "5px", marginLeft: "10px" }}>
+                                        <Input type="select" name="select" style={{ width: "8%" }} onChange={this.recordPerPageChangeHandler.bind(this)} >
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                            <option value="All">All</option>
+                                        </Input>
+                                    </Container>
+                                    <BootstrapTable data={techdata} striped hover>
                                         <TableHeaderColumn dataField="techName" isKey width="200"
                                                            filter={{ type: 'TextFilter' }} dataSort={true}>Name</TableHeaderColumn>
                                         <TableHeaderColumn dataField="techId" formatExtraData={this}
                                                            dataFormat={this.ActionbuttonDisplay} width="100" >Action</TableHeaderColumn>
                                     </BootstrapTable>
-                                    <Button color="primary" style={{ width: "7%", padding: "10px", marginTop: "10px" }}>Next</Button>{' '}
-                                    <Button color="primary" style={{ width: "7%", padding: "10px", marginTop: "10px" }}>Prev</Button>{' '}
-
+                                    <CardFooter id="PrevNext">
+                                        <ButtonGroup>
+                                            {(this.state.offset !== 0) ?
+                                                <Button color="primary" onClick={this.btnNextPrevClick.bind(this)} name="Prev">Prev</Button>
+                                                : null}&nbsp;&nbsp;&nbsp;
+                                            {noMoreData >= this.state.recordPerPage ?
+                                                <Button color="primary" onClick={this.btnNextPrevClick.bind(this)} name="Next">Next</Button>
+                                                : null
+                                            }
+                                        </ButtonGroup>
+                                    </CardFooter>
                                 </CardBody>
                             </Card>
                         </div>

@@ -1,4 +1,4 @@
-import { ADD_TECHNOLOGY, DELETE_SUBTECHNOLOGY, DELETE_TECHNOLOGY, EDIT_TECHNOLOGY, GET_SUBTECHNOLOGY, GET_TECHNOLOGY, INVALID_DATA } from '../Reducer/techReducer';
+import { ADD_TECHNOLOGY, DELETE_SUBTECHNOLOGY,GET_LIMITED_TECH, DELETE_TECHNOLOGY, EDIT_TECHNOLOGY, GET_TECHNOLOGY, INVALID_DATA } from '../Reducer/techReducer';
 import * as techService from '../Services/techService';
 
 
@@ -26,26 +26,23 @@ export const GetTechnologyAction = () => {
             })
     }
 }
+export const GetLimitedTechnologyAction = (pageNo, recordPerPage, fieldName, sortDirection) => {
 
-export const GetSubtechnologyAction = (techId) => {
-    return (dispatch) => {
-        return techService.GetSubtechnology(techId)
+    return dispatch => {
+        techService.GetLimitedTechnology(pageNo, recordPerPage, fieldName, sortDirection)
             .then((response) => {
                 if (response.status === 200) {
-
                     dispatch({
-                        type: GET_SUBTECHNOLOGY,
+                        type: GET_LIMITED_TECH,
                         data: response.data
                     })
                 }
             })
             .catch((error) => {
-                if (error) {
-                    dispatch({
-                        type: INVALID_DATA,
-                        error: "Invalid data"
-                    });
-                }
+                dispatch({
+                    type: INVALID_DATA,
+                    error:"Invalid data"
+                })
             })
     }
 }
@@ -99,7 +96,7 @@ export const EditTechnologyAction = (id,data) => {
     }
 }
 export const DeleteTechnologyAction = (id) => {
-    // debugger;
+
     return (dispatch) => {
         return techService.DeleteTechnology(id)
             .then((response) => {
@@ -124,6 +121,7 @@ export const DeleteTechnologyAction = (id) => {
 }
 
 export const DeleteSubtechnologyAction = (id) => {
+    // debugger;
     return (dispatch) => {
         return techService.DeleteSubtechnology(id)
             .then((response) => {

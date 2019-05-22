@@ -118,12 +118,10 @@ class User extends React.Component {
                                         <option value="100">100</option>
                                         <option value="All">All</option>
                                     </Input>
-                                    <Search placeholder="input search text" className="user_serch" style={{ width: "30%", marginLeft: "24px"}} onSearch={value => console.log(value)} enterButton />
                                 </Container>
                                 <br />
                                 <Search placeholder="input search text"  style={{ width: "30%", marginLeft: "24px" }} onSearch={searchTerm => this.btnSearch(searchTerm)} enterButton />
                                 
-                                {/* <Input style={{ width: "30%", marginLeft: "24px" }} type="text" placeholder="Search" /> */}
                                 <PDFGenerator data={this.props.get_limited_user} />
                                 <CardBody>
                                     <BootstrapTable data={users} striped hover>
