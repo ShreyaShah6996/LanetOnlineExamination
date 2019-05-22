@@ -6,10 +6,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { Popconfirm, Input as antInput } from 'antd';
 import 'antd/dist/antd.css';
+import '../../assets/css/styles.css';
 import Header from "components/Headers/Header.jsx";
 import * as userAction from '../../Action/userAction';
 import PDFGenerator from './pdfGenerator';
 const Search = antInput.Search;
+
 class User extends React.Component {
     constructor(props) {
         super(props);
@@ -68,6 +70,13 @@ class User extends React.Component {
         this.props.action.UserAction.deleteUser(userId, this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection)
     }
 
+    btnSearch = (searchText,e) => {
+        if(searchText)
+            this.props.action.UserAction.search({"searchTerm":searchText});
+        else
+            this.props.action.UserAction.getUser(this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection);
+    }
+
     render() {
         let users = [];
         let noMoreData = 0;
@@ -100,7 +109,7 @@ class User extends React.Component {
                                 <CardHeader className=" bg-transparent">
                                     <h3 className=" mb-0">User</h3>
                                 </CardHeader>
-                                <Container style={{ marginTop: "5px", marginLeft: "10px" }}>
+                                <Container style={{ marginTop: "5px", marginLeft: "10px",display: "flex "}}>
                                     <Input type="select" name="select" style={{ width: "8%" }} onChange={this.recordPerPageChangeHandler.bind(this)} >
                                         <option value="5">5</option>
                                         <option value="10">10</option>
@@ -111,9 +120,8 @@ class User extends React.Component {
                                     </Input>
                                 </Container>
                                 <br />
-                                <Search placeholder="input search text"  style={{ width: "30%", marginLeft: "24px" }} onSearch={value => console.log(value)} enterButton />
+                                <Search placeholder="input search text"  style={{ width: "30%", marginLeft: "24px" }} onSearch={searchTerm => this.btnSearch(searchTerm)} enterButton />
                                 
-                                {/* <Input style={{ width: "30%", marginLeft: "24px" }} type="text" placeholder="Search" /> */}
                                 <PDFGenerator data={this.props.get_limited_user} />
                                 <CardBody>
                                     <BootstrapTable data={users} striped hover>
@@ -124,7 +132,6 @@ class User extends React.Component {
                                             filter={{ type: 'TextFilter' }} filterFormatted dataFormat={collegeFunction}>College</TableHeaderColumn>
                                         <TableHeaderColumn dataField="createdDate" width="150" dataFormat={dateFormatter}
                                             dataSort={true}>Registered Date</TableHeaderColumn>
-                                        {/* filter={{ type: 'DateFilter' }} */}
                                         <TableHeaderColumn dataField="contactNo" width='180'>Contact</TableHeaderColumn>
                                         <TableHeaderColumn dataField="userId" formatExtraData={this}
                                             dataFormat={this.ActionbuttonDisplay} width="100" >Action</TableHeaderColumn>

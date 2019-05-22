@@ -1,12 +1,16 @@
 const INITIAL_STATE = {
     get_limited_user: [],
-    get_user_error: ""
+    get_user_error: "",
+    search_response:[],
+    search_error:""
 }
 
 export const GET_USER = 'GET_USER';
 export const GET_USER_FAILED = 'GET_USER_FAILED';
 export const DELETE_USER = 'DELETE_USER';
 export const DELETE_USER_FAILED = 'DELETE_USER_FAILED';
+export const SEARCH = 'SEARCH';
+export const SEARCH_FAILED = 'SEARCH_FAILED';
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
@@ -21,6 +25,12 @@ export default (state = INITIAL_STATE, action) => {
         }
         case DELETE_USER_FAILED: {
             return Object.assign({}, state, { get_user_error: action.deleteUserError, get_limited_user: [] });
+        }
+        case SEARCH: {
+            return Object.assign({}, state, { get_limited_user: action.searchResponse, get_user_error: "" });
+        }
+        case SEARCH_FAILED: {
+            return Object.assign({}, state, { get_user_error: action.searchError, get_limited_user: [] });
         }
         default:
             return state;
