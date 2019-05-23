@@ -33,10 +33,10 @@ class Technology extends React.Component {
     componentDidMount() {
         this.props.techaction.GetLimitedTechnologyAction(this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection);
     }
-    getTechnologies=(offset, recordPerPage, fieldName, sortDirection)=>{
+    getTechnologies = (offset, recordPerPage, fieldName, sortDirection) => {
         this.props.techaction.GetLimitedTechnologyAction(offset, recordPerPage, fieldName, sortDirection);
     }
-    recordPerPageChangeHandler=(e)=>{
+    recordPerPageChangeHandler = (e) => {
         let recordPerPage = e.target.value;
         let offset = 0;
         if (recordPerPage !== 'All') {
@@ -73,7 +73,7 @@ class Technology extends React.Component {
         })
     }
     DeleteTechnology = (techId, e) => {
-        this.props.techaction.DeleteTechnologyAction(techId).then((res)=>{
+        this.props.techaction.DeleteTechnologyAction(techId).then((res) => {
             this.props.techaction.GetLimitedTechnologyAction(this.state.offset, this.state.recordPerPage, this.state.fieldName, this.state.sortDirection);
         })
     }
@@ -95,6 +95,9 @@ class Technology extends React.Component {
                 noMoreData = key + 1;
                 return techdata.push(tech);
             })
+            if (techdata.length > this.state.recordPerPage) {
+                techdata.pop()
+            }
         }
         return (
             <div>
@@ -121,9 +124,9 @@ class Technology extends React.Component {
                                     </Container>
                                     <BootstrapTable data={techdata} striped hover>
                                         <TableHeaderColumn dataField="techName" isKey width="200"
-                                                           filter={{ type: 'TextFilter' }} dataSort={true}>Name</TableHeaderColumn>
+                                            filter={{ type: 'TextFilter' }} dataSort={true}>Name</TableHeaderColumn>
                                         <TableHeaderColumn dataField="techId" formatExtraData={this}
-                                                           dataFormat={this.ActionbuttonDisplay} width="100" >Action</TableHeaderColumn>
+                                            dataFormat={this.ActionbuttonDisplay} width="100" >Action</TableHeaderColumn>
                                     </BootstrapTable>
                                     <CardFooter id="PrevNext">
                                         <ButtonGroup>

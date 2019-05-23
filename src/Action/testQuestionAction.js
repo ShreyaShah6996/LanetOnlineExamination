@@ -54,6 +54,12 @@ export const updateQuestion = (testId, testQuesId,quesId) => {
         testQuestionService.updateQuestion(testId, testQuesId,quesId)
             .then((response) => {
                 if (response.status === 200) {
+                    let quesId;
+                    if (response.data.quesId) {
+                        quesId = JSON.parse(response.data.quesId);
+                        response.data.quesId = quesId;
+                    }
+                    debugger
                     dispatch({
                         type: UPDATE_QUESTION,
                         test_question: response.data

@@ -3,23 +3,26 @@ import { ADD_TEST, ADD_TEST_FAILED, GET_TEST, GET_TEST_FAILED, DELETE_TEST, DELE
 
 export const addTest = (data) => {
     return (dispatch) => {
-        return testService.addTest(data)
-            .then((response) => {
-                if (response.status === 200) {
-                    dispatch({
-                        type: ADD_TEST,
-                        add_test: response.data
-                    })
-                }
-            })
-            .catch((error) => {
-                if (error) {
-                    dispatch({
-                        type: ADD_TEST_FAILED,
-                        test_error: "Invalid data"
-                    });
-                }
-            })
+        return new Promise((resolve, reject)=> {
+            return testService.addTest(data)
+                .then((response) => {
+                    if (response.status === 200) {
+                        resolve({
+                            type: ADD_TEST,
+                            add_test: response.data
+                        })
+                    }
+                })
+                .catch((error) => {
+                    if (error) {
+                        dispatch({
+                            type: ADD_TEST_FAILED,
+                            test_error: "Invalid data"
+                        });
+                    }
+                })
+        })
+
     }
 }
 

@@ -13,7 +13,7 @@ import * as testQuestionAction from '../../Action/testQuestionAction';
 import * as testAction from '../../Action/testAction';
 import * as questionAction from '../../Action/queAction';
 
-let quesId = [];
+//let quesId = [];
 
 class TestQuestion extends React.Component {
     constructor(props) {
@@ -23,13 +23,20 @@ class TestQuestion extends React.Component {
             questionHidden: false,
             shuffleButtonHidden: false,
             applyChangesHidden: false,
-            // quesId: []
+            testQuestionList: [],
+            // quesId:[]
         };
     }
 
     componentDidMount() {
         this.props.action.TestAction.getAllTest();
         this.props.action.QuestionAction.getAllQuestion();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(this.props.test_question !== nextProps.test_question){
+            this.setState({testQuestionList:nextProps.test_question});
+        }
     }
 
     SelectHandleChange = (selectedOption) => {
@@ -44,22 +51,24 @@ class TestQuestion extends React.Component {
     };
 
     btnShuffle(testQuesId, e) {
-        quesId = [];
         this.openNotificationWithIcon('success', "Question Updated");
         this.props.action.TestQuestionAction.shuffleQuestion(this.state.selectedOption.value, testQuesId);
     }
 
     findIndex(ques){
+        const {testQuestionList:{quesId}}=this.state;
         var find = findIndex(quesId, (x, value) => {
             return +x.quesId === ques.quesId
         });
         return find;
     }
+
     addChangesState(){
         this.setState({ applyChangesHidden:true});
     }
 
     chkCompulsoryHandler(ques,e) {
+        const {testQuestionList:{quesId}}=this.state;
         var find = this.findIndex(ques);
         if (find !== -1 || find === 0) {
             quesId[find]["Coumpulsory"] = e.target.checked;
@@ -68,11 +77,13 @@ class TestQuestion extends React.Component {
                 quesId:ques.quesId,
                 Coumpulsory: e.target.checked
             })
-            }
+        }
+        this.setState({testQuestionList:{...this.state.testQuestionList,quesId:quesId}});
         this.addChangesState();
     }
 
     marksChangeHandler(ques,e){
+        const {testQuestionList:{quesId}}=this.state;
         var find = this.findIndex(ques);
         if (find !== -1 || find === 0) {
             quesId[find]["marks"] = parseInt(e.target.value);
@@ -82,10 +93,12 @@ class TestQuestion extends React.Component {
                 marks: parseInt(e.target.value)
             })
         }
+        this.setState({testQuestionList:{...this.state.testQuestionList,quesId:quesId}});
         this.addChangesState();
     }
 
     negativeMarksChangeHandler(ques,e){
+        const {testQuestionList:{quesId}}=this.state;
         var find = this.findIndex(ques);
         if (find !== -1 || find === 0) {
             quesId[find]["negativeMarks"] = parseInt(e.target.value);
@@ -95,11 +108,12 @@ class TestQuestion extends React.Component {
                 negativeMarks: parseInt(e.target.value)
             })
         }
+        this.setState({testQuestionList:{...this.state.testQuestionList,quesId:quesId}});
         this.addChangesState();
     }
 
     btnApplyChanges(testQuesId,quesList,e){
-        const { selectedOption } = this.state;
+        const { selectedOption, testQuestionList:{quesId} } = this.state;
         quesList.forEach(quelist => {
             quesId.forEach(queId => {
                 if(quelist.quesId === queId.quesId){
@@ -116,6 +130,7 @@ class TestQuestion extends React.Component {
         })
         let question = {quesId:JSON.stringify(quesList)};
         this.props.action.TestQuestionAction.updateQuestion(selectedOption.value,testQuesId,question);
+        this.setState({ applyChangesHidden: false});
     }
 
     render() {
@@ -130,21 +145,21 @@ class TestQuestion extends React.Component {
                 return testOptions.push({ value: test.testId, label: test.testName })
             })
         }
-
-        if (this.props.test_question && this.props.test_question.length !== 0) {
-            if (this.props.test_question.quesId && this.props.test_question.quesId.length !== 0) {
-                testQuesId = this.props.test_question.testQuesId;
-                this.props.test_question.quesId.map((ques, key) => {
-                    if (this.props.get_all_question && this.props.get_all_question.length !== 0) {
+        if (this.state.testQuestionList) {
+            if (this.state.testQuestionList.quesId && this.state.testQuestionList.quesId.length) {
+                testQuesId = this.state.testQuestionList.testQuesId;
+                this.state.testQuestionList.quesId.map((ques, key) => {
+                    if (this.props.get_all_question.length) {
                         this.props.get_all_question.filter(allques => {
                             if (allques.quesId === ques.quesId) {
                                 quesList.push(ques);
                                 return testQuestion.push(<tr key={key}>
                                     <td>{key + 1}</td>
+                                    <td>{allques.SubTechnology.subTechName ? allques.SubTechnology.subTechName : allques.Technology.TechName}</td>
                                     <td><Input type="textarea" disabled value={allques.question} /></td>
-                                    <td><Input style={{ marginLeft: "28px" }} onChange={this.chkCompulsoryHandler.bind(this,ques)} type="checkbox" defaultChecked={ques.Coumpulsory} /></td>
-                                    <td><Input type="number" onChange={this.marksChangeHandler.bind(this,ques)} defaultValue={ques.marks} /></td>
-                                    <td><Input type="number" onChange={this.negativeMarksChangeHandler.bind(this,ques)} defaultValue={ques.negativeMarks} /></td>
+                                    <td><Input type="checkbox" style={{ marginLeft: "28px" }} onChange={this.chkCompulsoryHandler.bind(this,ques)} checked={ques.Coumpulsory} /></td>
+                                    <td><Input type="number" onChange={this.marksChangeHandler.bind(this,ques)} value={ques.marks} /></td>
+                                    <td><Input type="number" onChange={this.negativeMarksChangeHandler.bind(this,ques)} value={ques.negativeMarks} /></td>
                                 </tr>)
                             }
                             return null;
@@ -182,6 +197,7 @@ class TestQuestion extends React.Component {
                                                         <thead className="thead-light">
                                                             <tr>
                                                                 <th scope="col">Sr.No</th>
+                                                                <th scope="col">Technology</th>
                                                                 <th scope="col">Questions</th>
                                                                 <th scope="col">Compulsory</th>
                                                                 <th scope="col">Marks</th>

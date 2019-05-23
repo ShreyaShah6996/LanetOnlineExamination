@@ -58,7 +58,7 @@ class User extends React.Component {
         this.getUserData(offset, recordPerPage, this.state.fieldName, this.state.sortDirection);
     }
 
-    ActionbuttonDisplay(cell, rowData, extraData) {
+    ActionbuttonDisplay=(cell, rowData, extraData) =>{
         return (
             <Popconfirm title="Are you sure you want to delete it?" onConfirm={extraData.deleteUserHandler.bind(extraData, cell)} okText="Yes" cancelText="No">
                 <i style={{ fontSize: "25px" }} className="ni ni-fat-remove"></i>
@@ -128,7 +128,7 @@ class User extends React.Component {
                                         {/* <TableHeaderColumn isKey dataField='userName' width='180' dataSort={true}>Username</TableHeaderColumn> */}
                                         <TableHeaderColumn dataField='firstName' dataFormat={NameDisplay} width='180' dataSort={true}>Name</TableHeaderColumn>
                                         <TableHeaderColumn isKey dataField="email" width='180' dataSort={true}>Email</TableHeaderColumn>
-                                        <TableHeaderColumn dataField="College" width="300"
+                                        <TableHeaderColumn dataField="College" width="300"  tdStyle={ { whiteSpace: 'normal' } }
                                             filter={{ type: 'TextFilter' }} filterFormatted dataFormat={collegeFunction}>College</TableHeaderColumn>
                                         <TableHeaderColumn dataField="createdDate" width="150" dataFormat={dateFormatter}
                                             dataSort={true}>Registered Date</TableHeaderColumn>

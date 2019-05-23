@@ -66,7 +66,6 @@ export const deleteUser = (userId, pageNo, recordPerPage, fieldName, sortDirecti
 };
 
 export const search = (searchTerm) => {
-    debugger
     return dispatch => {
         userService.search(searchTerm)
             .then((response) => {

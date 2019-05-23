@@ -1,14 +1,11 @@
-import { ADD_TECHNOLOGY, DELETE_SUBTECHNOLOGY,GET_LIMITED_TECH, DELETE_TECHNOLOGY, EDIT_TECHNOLOGY, GET_TECHNOLOGY, INVALID_DATA } from '../Reducer/techReducer';
+import { ADD_TECHNOLOGY, DELETE_SUBTECHNOLOGY, GET_LIMITED_TECH, DELETE_TECHNOLOGY, EDIT_TECHNOLOGY, GET_TECHNOLOGY, INVALID_DATA } from '../Reducer/techReducer';
 import * as techService from '../Services/techService';
 
-
 export const GetTechnologyAction = () => {
-
     return (dispatch) => {
         return techService.GetTechnology()
             .then((response) => {
                 if (response.status === 200) {
-
                     dispatch({
                         type: GET_TECHNOLOGY,
                         data: response.data
@@ -17,7 +14,6 @@ export const GetTechnologyAction = () => {
             })
             .catch((error) => {
                 if (error) {
-                    // debugger;
                     dispatch({
                         type: INVALID_DATA,
                         error: "Invalid data"
@@ -27,7 +23,6 @@ export const GetTechnologyAction = () => {
     }
 }
 export const GetLimitedTechnologyAction = (pageNo, recordPerPage, fieldName, sortDirection) => {
-
     return dispatch => {
         techService.GetLimitedTechnology(pageNo, recordPerPage, fieldName, sortDirection)
             .then((response) => {
@@ -41,14 +36,12 @@ export const GetLimitedTechnologyAction = (pageNo, recordPerPage, fieldName, sor
             .catch((error) => {
                 dispatch({
                     type: INVALID_DATA,
-                    error:"Invalid data"
+                    error: "Invalid data"
                 })
             })
     }
 }
-
 export const AddTechnologyAction = (data) => {
-    // debugger;
     return (dispatch) => {
         return techService.AddTechnology(data)
             .then((response) => {
@@ -62,7 +55,6 @@ export const AddTechnologyAction = (data) => {
             })
             .catch((error) => {
                 if (error) {
-                    // debugger;
                     dispatch({
                         type: INVALID_DATA,
                         error: "Invalid data"
@@ -71,13 +63,11 @@ export const AddTechnologyAction = (data) => {
             })
     }
 }
-export const EditTechnologyAction = (id,data) => {
-    // debugger;
+export const EditTechnologyAction = (id, data) => {
     return (dispatch) => {
-        return techService.EditTechnology(id,data)
+        return techService.EditTechnology(id, data)
             .then((response) => {
                 if (response.status === 200) {
-
                     dispatch({
                         type: EDIT_TECHNOLOGY,
                         data: response.data
@@ -86,7 +76,6 @@ export const EditTechnologyAction = (id,data) => {
             })
             .catch((error) => {
                 if (error) {
-                    // debugger;
                     dispatch({
                         type: INVALID_DATA,
                         error: "Invalid data"
@@ -96,12 +85,10 @@ export const EditTechnologyAction = (id,data) => {
     }
 }
 export const DeleteTechnologyAction = (id) => {
-
     return (dispatch) => {
         return techService.DeleteTechnology(id)
             .then((response) => {
                 if (response.status === 200) {
-
                     dispatch({
                         type: DELETE_TECHNOLOGY,
                         data: response.data
@@ -110,7 +97,6 @@ export const DeleteTechnologyAction = (id) => {
             })
             .catch((error) => {
                 if (error) {
-                    // debugger;
                     dispatch({
                         type: INVALID_DATA,
                         error: "Invalid data"
@@ -119,14 +105,11 @@ export const DeleteTechnologyAction = (id) => {
             })
     }
 }
-
 export const DeleteSubtechnologyAction = (id) => {
-    // debugger;
     return (dispatch) => {
         return techService.DeleteSubtechnology(id)
             .then((response) => {
                 if (response.status === 200) {
-
                     dispatch({
                         type: DELETE_SUBTECHNOLOGY,
                         data: response.data
@@ -135,7 +118,6 @@ export const DeleteSubtechnologyAction = (id) => {
             })
             .catch((error) => {
                 if (error) {
-                    // debugger;
                     dispatch({
                         type: INVALID_DATA,
                         error: "Invalid data"
