@@ -351,7 +351,7 @@ class AddTechnology extends Component {
                             </FormGroup>
                         </Form>
                     </Container>
-                    <div hidden={this.state.isempty} style={{ color: 'red' }}>*Please fill the all details.</div>
+                    <div hidden={this.state.isempty} style={{ color: 'red' }}>* Please fill the all details.</div>
                 </Container>
             </div>
         );

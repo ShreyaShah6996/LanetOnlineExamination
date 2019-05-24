@@ -43,7 +43,6 @@ class TestQuestion extends React.Component {
         this.setState({ selectedOption,questionHidden:true,applyChangesHidden:false,shuffleButtonHidden:true });
         this.props.action.TestQuestionAction.getTestQuestion(selectedOption.value);
     }
-
     openNotificationWithIcon = (type, msg) => {
         notification[type]({
             message: msg
@@ -151,11 +150,12 @@ class TestQuestion extends React.Component {
                 this.state.testQuestionList.quesId.map((ques, key) => {
                     if (this.props.get_all_question.length) {
                         this.props.get_all_question.filter(allques => {
+                            debugger
                             if (allques.quesId === ques.quesId) {
                                 quesList.push(ques);
                                 return testQuestion.push(<tr key={key}>
                                     <td>{key + 1}</td>
-                                    <td>{allques.SubTechnology.subTechName ? allques.SubTechnology.subTechName : allques.Technology.TechName}</td>
+                                    <td>{allques.SubTechnology!==null ? allques.SubTechnology.subTechName : allques.Technology.techName}</td>
                                     <td><Input type="textarea" disabled value={allques.question} /></td>
                                     <td><Input type="checkbox" style={{ marginLeft: "28px" }} onChange={this.chkCompulsoryHandler.bind(this,ques)} checked={ques.Coumpulsory} /></td>
                                     <td><Input type="number" onChange={this.marksChangeHandler.bind(this,ques)} value={ques.marks} /></td>

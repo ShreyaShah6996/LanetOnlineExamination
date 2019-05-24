@@ -6,9 +6,10 @@ import Select from 'react-select';
 import { Badge, Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Nav, NavItem, NavLink, Row, TabContent, Table, TabPane } from "reactstrap";
 import { bindActionCreators } from 'redux';
 import * as queAction from '../../Action/queAction'
+import sample from '../../assets/excelsheet/sample.xls';
 import CustomeSwitch from '../../components/CustomeSwitch/CustomeSwitch'
 import RichTextBox from '../../components/RichTextEditor/richtext'
-import sample from '../../assets/excelsheet/sample.xls';
+
 
 class AddQuestions extends Component {
     constructor(props) {
@@ -201,7 +202,9 @@ class AddQuestions extends Component {
         let qobj = {
             questions: fobj
         }
-        this.props.queaction.AddQuestionAction(qobj)
+        this.props.queaction.AddQuestionAction(qobj).then((res)=>{
+            this.clearState()
+        })
     }
     mcqClick = () => {
         this.setState({
@@ -273,32 +276,39 @@ class AddQuestions extends Component {
                 questions: [obj]
             }
             this.props.queaction.AddQuestionAction(qobj).then((res) => {
-                this.setState({
-                    checked_a: false,
-                    checked_b: false,
-                    checked_c: false,
-                    checked_d: false,
-                    selectedtech: null,
-                    selectedsubtech: null,
-                    eopt_a: '',
-                    eopt_b: '',
-                    eopt_c: '',
-                    eopt_d: '',
-                    glob_que: '',
-                    answer: '',
-                    fanswer: '',
-                    op_a: '',
-                    op_b: '',
-                    op_c: '',
-                    op_d: '',
-                    ismcq: true,
-                    ishide: {
-                        ...state.ishide,
-                        radio1: false,
-                    }
-                })
+                this.clearState()
             });
         }
+    }
+    clearState=()=>{
+        this.setState({
+            checked_a: false,
+            checked_b: false,
+            checked_c: false,
+            checked_d: false,
+            selectedtech: null,
+            selectedsubtech: null,
+            eopt_a: '',
+            eopt_b: '',
+            eopt_c: '',
+            eopt_d: '',
+            glob_que: '',
+            answer: '',
+            fanswer: '',
+            op_a: '',
+            op_b: '',
+            op_c: '',
+            op_d: '',
+            ismcq: true,
+            validfile: true,
+            fileJson:[],
+            ishide: {
+                ...this.state.ishide,
+                radio1: false,
+                selectsubtech: true,
+                fselectsubtech: true,
+            }
+        }) 
     }
     onChangeAnswer = (e) => {
         if (e.target.id === 'fillup') {
@@ -343,7 +353,6 @@ class AddQuestions extends Component {
                 label: st.subTechName
             }
             subtechoptions.push(obj)
-
             return true;
         })
         return (
@@ -485,7 +494,7 @@ class AddQuestions extends Component {
                                                     <Button onClick={this.addQuestion} style={{ float: "right", margin: "15px" }}>Add Question</Button>
                                                 </Form>
                                             </CardBody>
-                                            <div hidden={this.state.validQue} style={{ color: 'red' }}>*Please fill the all details</div>
+                                            <div hidden={this.state.validQue} style={{ color: 'red' }}>* Please fill the all details</div>
                                         </Container>
                                     </Row>
                                 </TabPane>
@@ -510,7 +519,7 @@ class AddQuestions extends Component {
                                                     options={subtechoptions}
                                                 />
                                                 <input type="file" onChange={this.fileHandler.bind(this)} style={{ margin: "20px" }} />
-                                                <div hidden={this.state.validfile} style={{ color: 'red' }}>*Accepts only Excel file</div><br />
+                                                <div hidden={this.state.validfile} style={{ color: 'red' }}>* Accepts only Excel file</div><br />
                                                 <a href={sample}>Sample Excel file</a>
                                                 <Button id="uploadfile" hidden onClick={this.UploadFile}>Upload</Button>
                                             </Card>
@@ -521,8 +530,7 @@ class AddQuestions extends Component {
                         </Card>
                     </div>
                 </Row>
-            </div>
-        )
+            </div>)
     }
 }
 
