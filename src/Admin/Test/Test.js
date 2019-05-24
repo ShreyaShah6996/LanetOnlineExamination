@@ -42,7 +42,6 @@ import * as testAction from '../../Action/testAction';
 let allTech = [];
 let subTechRatio = [];
 let techRatio = [];
-let totalRatioCount = 0;
 
 class Test extends React.Component {
     constructor(props) {

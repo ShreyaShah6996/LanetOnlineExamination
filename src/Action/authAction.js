@@ -1,28 +1,36 @@
 import * as authService from '../Services/authService';
-import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from '../Reducer/authReducer';
+import {LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from '../Reducer/authReducer';
 
 export const RegisterUser = (credentials) => {
     return (dispatch) => {
         authService.SignUp(credentials)
             .then((response) => {
                 if (response.status === 200) {
-                    let fullname = response.data.user.firstName + " " + response.data.user.lastName;
-                    dispatch({
-                        type: REGISTER_SUCCESS,
-                        data: {
-                            fullName: fullname,
-                            email: response.data.user.email,
-                            // userName: response.data.user.userName,
-                            contactNo: response.data.user.contactNo
-                        }
-                    })
+                    let LoginData = {
+                        email: credentials.email,
+                        password: credentials.password
+                    }
+                    authService.Login(LoginData)
+                        .then((res) => {
+                            if (res.status === 200) {
+                                let fullname = res.data.user.firstName + " " + res.data.user.lastName;
+                                localStorage.setItem("token", res.data.user.token)
+                                localStorage.setItem("role", res.data.user.role)
+                                localStorage.setItem("name", fullname)
+                                localStorage.setItem("userId", res.data.user.userId)
+                                dispatch({
+                                    type: LOGIN_SUCCESS,
+                                    data: res.data.user
+                                })
+                            }
+                        })
                 }
             })
             .catch((error) => {
                 if (error) {
                     dispatch({
-                        type: REGISTER_FAIL,
-                        register_error: error.response.data.error
+                        type: LOGIN_FAIL,
+                        login_error: error.response.data.error
                     });
                 }
             })
@@ -39,7 +47,6 @@ export const LoginUser = (credentials) => {
                     localStorage.setItem("role", response.data.user.role)
                     localStorage.setItem("name", fullname)
                     localStorage.setItem("userId", response.data.user.userId)
-                    // localStorage.setItem("userName", response.data.user.userName)
                     dispatch({
                         type: LOGIN_SUCCESS,
                         data: response.data.user
@@ -66,6 +73,5 @@ export const logoutUser = () => {
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.removeItem("name");
-        // localStorage.removeItem("userName");
     }
 };

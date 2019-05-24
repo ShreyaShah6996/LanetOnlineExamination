@@ -155,8 +155,8 @@ class TestQuestion extends React.Component {
                                 quesList.push(ques);
                                 return testQuestion.push(<tr key={key}>
                                     <td>{key + 1}</td>
-                                    <td>{allques.SubTechnology!==null ? allques.SubTechnology.subTechName : allques.Technology.techName}</td>
-                                    <td><Input type="textarea" disabled value={allques.question} /></td>
+                                    <td>{allques.SubTechnology ? allques.SubTechnology.subTechName : allques.Technology.techName}</td>
+                                    <td><div dangerouslySetInnerHTML={{__html: allques.question}} style={{width:"30%"}} /></td>
                                     <td><Input type="checkbox" style={{ marginLeft: "28px" }} onChange={this.chkCompulsoryHandler.bind(this,ques)} checked={ques.Coumpulsory} /></td>
                                     <td><Input type="number" onChange={this.marksChangeHandler.bind(this,ques)} value={ques.marks} /></td>
                                     <td><Input type="number" onChange={this.negativeMarksChangeHandler.bind(this,ques)} value={ques.negativeMarks} /></td>
@@ -164,7 +164,6 @@ class TestQuestion extends React.Component {
                             }
                             return null;
                         })
-
                     }
                     return null;
                 })

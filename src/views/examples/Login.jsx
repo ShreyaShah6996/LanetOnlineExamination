@@ -52,8 +52,12 @@ class Login extends React.Component {
         this.setState({ err_msg: err_msg })
       }
       else if (err_msg === "") {
-        this.props.history.push('/admin/index');
-
+        if(this.props.login_data.role){
+          this.props.history.push('/user/test');
+        }
+        else {
+          this.props.history.push('/admin/index');
+        }
       }
     }
   }

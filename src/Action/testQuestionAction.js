@@ -3,7 +3,7 @@ import { GET_TEST_QUESTION, GET_TEST_QUESTION_FAILED,UPDATE_QUESTION,UPDATE_QUES
 
 export const getTestQuestion = (testId) => {
     return dispatch => {
-        testQuestionService.getTestQuestion(testId)
+        return testQuestionService.getTestQuestion(testId)
             .then((response) => {
                 if (response.status === 200) {
                     let quesId;
@@ -59,7 +59,6 @@ export const updateQuestion = (testId, testQuesId,quesId) => {
                         quesId = JSON.parse(response.data.quesId);
                         response.data.quesId = quesId;
                     }
-                    debugger
                     dispatch({
                         type: UPDATE_QUESTION,
                         test_question: response.data
