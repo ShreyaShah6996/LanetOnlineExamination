@@ -42,6 +42,7 @@ import * as testAction from '../../Action/testAction';
 let allTech = [];
 let subTechRatio = [];
 let techRatio = [];
+let totalRatioCount = 0;
 
 class Test extends React.Component {
     constructor(props) {
@@ -77,7 +78,8 @@ class Test extends React.Component {
             fieldName: 'testId',
             sortDirection: 'ASC',
             showRatioForTech: false,
-            selectAll:false
+            selectAll:false,
+            RatioInputDisabled:true
         };
 
         this.TestTabToggle = this.TestTabToggle.bind(this);
@@ -149,7 +151,7 @@ class Test extends React.Component {
         return month + '/' + day + '/' + date.getFullYear();
     }
 
-    DateHandleChange(date) {
+    DateHandleChange = (date) => {
         this.setState({errors: {}})
         let dateObj = new Date(date);
         let dt = this.GetDateFormat(dateObj);
@@ -172,7 +174,7 @@ class Test extends React.Component {
         });
     }
 
-    TechRatioChangehandler(techId, e) {
+    TechRatioChangeHandler(techId, e) {
         this.setState({errors: {}})
         var find = findIndex(techRatio, (x, value) => { return +Object.keys(x)[0] === techId });
         if (find !== -1 || find === 0) {
@@ -182,7 +184,7 @@ class Test extends React.Component {
         }
     }
 
-    SubTechRatioChangehandler(techId, e) {
+    SubTechRatioChangeHandler(techId, e) {
         this.setState({errors: {}})
         var find = findIndex(subTechRatio, (x, value) => { return +Object.keys(x)[0] === techId });
         if (find !== -1 || find === 0) {
@@ -210,10 +212,8 @@ class Test extends React.Component {
     };
 
     SelectHandleChange = (selectedOption) => {
-        debugger
         const { test: { ratio = [] } } = this.state;
         ratio.length && this.updateTestRatio(selectedOption);
-        debugger
         this.setState({errors: {}});
         let extra = this;
         if (selectedOption.length < 1) {
@@ -240,16 +240,8 @@ class Test extends React.Component {
                                             <td> {subTech.subTechName} </td>
                                             <td><input type="text"
                                                        name={subTech.subTechId}
-                                                       onChange={this.SubTechRatioChangehandler.bind(this, technology.techId)}
-                                                       style={
-                                                           {
-                                                               height: "33px",
-                                                               width: "30%",
-                                                               borderRadius: "7px",
-                                                               border: "1px solid #b3b3b3",
-                                                               padding: "9px"
-                                                           }
-                                                       }
+                                                       onChange={this.SubTechRatioChangeHandler.bind(this, technology.techId)}
+                                                       style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}
                                             /></td>
                                         </tr>
                                     )
@@ -260,16 +252,8 @@ class Test extends React.Component {
                                         <td> {technology.techName} </td>
                                         <td><input type="text"
                                                    name={technology.techId}
-                                                   onChange={this.TechRatioChangehandler.bind(this, technology.techId)}
-                                                   style={
-                                                       {
-                                                           height: "33px",
-                                                           width: "30%",
-                                                           borderRadius: "7px",
-                                                           border: "1px solid #b3b3b3",
-                                                           padding: "9px"
-                                                       }
-                                                   }
+                                                   onChange={this.TechRatioChangeHandler.bind(this, technology.techId)}
+                                                   style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}
                                         /></td>
                                     </tr>
                                 )
@@ -292,16 +276,8 @@ class Test extends React.Component {
                                                     {width: "30%"}
                                                 }>< input type="text"
                                                           name={subTech.subTechId}
-                                                          onChange={this.SubTechRatioChangehandler.bind(this, technology.techId)}
-                                                          style={
-                                                              {
-                                                                  height: "33px",
-                                                                  width: "30%",
-                                                                  borderRadius: "7px",
-                                                                  border: "1px solid #b3b3b3",
-                                                                  padding: "9px"
-                                                              }
-                                                          }
+                                                          onChange={this.SubTechRatioChangeHandler.bind(this, technology.techId)}
+                                                          style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}
                                                 /></td>
                                             </tr>
                                         )
@@ -315,16 +291,8 @@ class Test extends React.Component {
                                                 {width: "30%"}
                                             }>< input type="text"
                                                       name={technology.techId}
-                                                      onChange={this.TechRatioChangehandler.bind(this, technology.techId)}
-                                                      style={
-                                                          {
-                                                              height: "33px",
-                                                              width: "30%",
-                                                              borderRadius: "7px",
-                                                              border: "1px solid #b3b3b3",
-                                                              padding: "9px"
-                                                          }
-                                                      }
+                                                      onChange={this.TechRatioChangeHandler.bind(this, technology.techId)}
+                                                      style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px" }}
                                             /></td>
                                         </tr>
                                     )
@@ -358,28 +326,28 @@ class Test extends React.Component {
                 ratio: parseInt(Object.values(techratio).toString())
             });
         })
-        let a = subTechRatio;
-        let b = [];
-        let c = [];
-        forEach(a, (x) => {
+        let subTechRatioList = subTechRatio;
+        let subTech = [];
+        let uniqueKey = [];
+        forEach(subTechRatioList, (x) => {
             forEach(x, (value, key) => {
-                if (!includes(c, key)) {
-                    c.push(key);
-                    b.push({
+                if (!includes(uniqueKey, key)) {
+                    uniqueKey.push(key);
+                    subTech.push({
                         techId: parseInt(key),
                         subTech: map(value, (value, key) => ({subTechId: parseInt(key), ratio: parseInt(value)}))
                     })
                 } else {
-                    let i = findIndex(b, function (o) {
+                    let i = findIndex(subTech, function (o) {
                         return parseInt(o.techId) === parseInt(key)
                     })
                     forEach(value, (value, key) => {
-                        b[i].subTech.push({subTechId: parseInt(key), ratio: parseInt(value)})
+                        subTech[i].subTech.push({subTechId: parseInt(key), ratio: parseInt(value)})
                     })
                 }
             })
         })
-        let Ratio = techId.concat(b);
+        let Ratio = techId.concat(subTech);
         if (Ratio.length <= 0) {
             this.setState({
                 ...this.state.errors,
@@ -390,7 +358,7 @@ class Test extends React.Component {
         } else {
             let totalRatioCount = 0;
             let rat = Ratio;
-            rat.map(r => {
+            rat.forEach(r => {
                 if (r.subTech && r.subTech.length) {
                     r.subTech.map(sub => {
                         return totalRatioCount += sub.ratio
@@ -398,7 +366,6 @@ class Test extends React.Component {
                 } else {
                     return totalRatioCount += r.ratio
                 }
-                return null;
             })
             if (totalRatioCount > 100) {
                 this.openNotificationWithIcon('warning', "Ratio cannot be more than 100");
@@ -417,9 +384,10 @@ class Test extends React.Component {
     }
 
     btnAddTest(e) {
+        let dt;
         e.preventDefault();
         let fieldsErrors = {};
-        const {test, errors, selectedOption} = this.state;
+        const {test,startDate, errors, selectedOption} = this.state;
         if (
             test.testName === "" &&
             test.totalQuestion === 0 &&
@@ -455,16 +423,19 @@ class Test extends React.Component {
                 }
             //date
             if (test.date === "") {
-                fieldsErrors = {
-                    ...errors,
-                    date: "* Date Required"
-                }
+                let dateObj = new Date(startDate);
+                 dt = this.GetDateFormat(dateObj);
+                this.setState({test: {
+                        ...test,
+                        date:dt
+                    }
+                })
             }
             //totalQuestion
-            if (test.totalQuestion === 0) {
+            if (test.totalQuestion <= 1) {
                 fieldsErrors = {
                     ...errors,
-                    totalQuestion: "* Total Question Required"
+                    totalQuestion: "* Total Question Required or cannot be less than 1"
                 }
             }
             //description
@@ -489,13 +460,13 @@ class Test extends React.Component {
                 }
             }
             let testData;
-            if (!fieldsErrors.testName && !fieldsErrors.description && !fieldsErrors.totalQuestion && !fieldsErrors.date && !fieldsErrors.duration && !fieldsErrors.professor && !fieldsErrors.selectedOption && !fieldsErrors.token) {
+            if (!fieldsErrors.testName && !fieldsErrors.description && !fieldsErrors.totalQuestion && !fieldsErrors.duration && !fieldsErrors.professor && !fieldsErrors.selectedOption && !fieldsErrors.token) {
                 if (this.state.checked) {
                     testData = {
                         testName: test.testName,
                         description: test.description,
                         totalQuestion: test.totalQuestion,
-                        date: test.date,
+                        date: (test.date ? test.data:dt),
                         duration: test.duration,
                         professor: test.professor,
                         ratio: JSON.stringify(test.ratio),
@@ -506,18 +477,18 @@ class Test extends React.Component {
                         testName: test.testName,
                         description: test.description,
                         totalQuestion: test.totalQuestion,
-                        date: test.date,
+                        date: (test.date ? test.data:dt),
                         professor: test.professor,
                         ratio: JSON.stringify(test.ratio),
                         token: test.token
                     }
                 }
                 if (test.ratio && test.ratio.length) {
-
                     this.setState({test: {}, selectedOption: null})
-                    this.props.action.TestAction.addTest(testData);
-                    this.TestTabToggle('1');
-                    // }
+                    this.props.action.TestAction.addTest(testData).then(response =>{
+                        this.TestTabToggle('1');
+                    });
+
                 } else {
                     this.openNotificationWithIcon('warning', "Please Add Ratio");
                 }
@@ -568,9 +539,7 @@ class Test extends React.Component {
                 })
             }
         }
-
         techOptions.push({value: getTechnology.length + 1, label: 'All'});
-
         if (getTest.length) {
             getTest.map((test, key) => {
                 noMoreData = key + 1;
@@ -580,7 +549,8 @@ class Test extends React.Component {
 
         function dateFormatter(celll, row) {
             let cell = new Date(celll);
-            return `${('0' + cell.getDate()).slice(-2)}/${('0' + (cell.getMonth() + 1)).slice(-2)}/${cell.getFullYear()}`;
+            // return `${('0' + cell.getDate()).slice(-2)}/${('0' + (cell.getMonth() + 1)).slice(-2)}/${cell.getFullYear()}`;
+            return `${('0' + (cell.getMonth() + 1)).slice(-2)}/${('0' + cell.getDate()).slice(-2)}/${cell.getFullYear()}`;
         }
 
         return (
@@ -590,15 +560,6 @@ class Test extends React.Component {
                         <div className="col">
                             <Card className=" shadow">
                                 <CardHeader className=" bg-transparent"><h3 className=" mb-0"> Test </h3></CardHeader>
-                                <Input type="select" name="select" style={{width: "8%", marginTop: "5px"}}
-                                       onChange={this.recordPerPageChangeHandler.bind(this)}>
-                                    <option value="5"> 5</option>
-                                    <option value="10"> 10</option>
-                                    <option value="25"> 25</option>
-                                    <option value="50"> 50</option>
-                                    <option value="100"> 100</option>
-                                    <option value="All"> All</option>
-                                </Input> <br/>
                                 <Nav tabs>
                                     <NavItem>
                                         <NavLink
@@ -606,18 +567,29 @@ class Test extends React.Component {
                                             onClick={() => {
                                                 this.TestTabToggle('1')
                                             }}>Test</NavLink>
-                                    </NavItem> <NavItem>
+                                    </NavItem>
+                                    <NavItem>
                                     <NavLink className={classnames({active: this.state.activeTab === '2'})}
                                              onClick={() => {
                                                  this.TestTabToggle('2')
-                                             }}>
-                                        Add Test </NavLink> </NavItem> </Nav>
-
+                                             }}>Add Test
+                                    </NavLink>
+                                </NavItem>
+                                </Nav>
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
                                         <Row>
                                             <div className=" col">
                                                 <Card className=" shadow">
+                                                    <Input type="select" name="select" style={{width: "8%", marginTop: "5px"}}
+                                                           onChange={this.recordPerPageChangeHandler.bind(this)}>
+                                                        <option value="5"> 5</option>
+                                                        <option value="10"> 10</option>
+                                                        <option value="25"> 25</option>
+                                                        <option value="50"> 50</option>
+                                                        <option value="100"> 100</option>
+                                                        <option value="All"> All</option>
+                                                    </Input> <br/>
                                                     <CardBody>
                                                         <BootstrapTable data={testData} striped hover>
                                                             <TableHeaderColumn isKey dataField="testName" width='130'
@@ -628,11 +600,11 @@ class Test extends React.Component {
                                                                 width='120'
                                                                 dataSort={true}> Total Questions
                                                             </TableHeaderColumn>
-                                                            <TableHeaderColumn dataField="date"
-                                                                               width='200'
-                                                                               dataSort={true}
-                                                                               dataFormat={dateFormatter}
-                                                                               filter={{type: 'DateFilter'}}> Date
+                                                            <TableHeaderColumn
+                                                                dataField="date"
+                                                                width='200'
+                                                                dataSort={true}
+                                                                dataFormat={dateFormatter}>Date
                                                             </TableHeaderColumn>
                                                             <TableHeaderColumn
                                                                 dataField="duration"
@@ -700,7 +672,9 @@ class Test extends React.Component {
                                                         <FormGroup>
                                                             <Input type="number" name="totalQuestion"
                                                                    placeholder="Total Questions"
-                                                                   onChange={this.onInputChangeHandler.bind(this)}/>
+                                                                   onChange={this.onInputChangeHandler.bind(this)}
+                                                                   min="1"
+                                                            />
                                                             <span
                                                                 style={{color: "red"}}> {this.state.errors.totalQuestion} </span>
                                                         </FormGroup>
@@ -742,7 +716,7 @@ class Test extends React.Component {
                                                     <h3> Ratio for Technology </h3>
                                                     <Form>
                                                         <Table style={{listStyle: "none", padding: "0", margin: "0"}}>
-                                                            <tbody> {allTech} </tbody>
+                                                            <tbody>{allTech}</tbody>
                                                         </Table>
                                                         <span style={{color: "red"}}> {this.state.errors.ratio} </span>
                                                         <br/>

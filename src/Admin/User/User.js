@@ -125,10 +125,9 @@ class User extends React.Component {
                                 <PDFGenerator data={this.props.get_limited_user} />
                                 <CardBody>
                                     <BootstrapTable data={users} striped hover>
-                                        {/* <TableHeaderColumn isKey dataField='userName' width='180' dataSort={true}>Username</TableHeaderColumn> */}
                                         <TableHeaderColumn dataField='firstName' dataFormat={NameDisplay} width='180' dataSort={true}>Name</TableHeaderColumn>
                                         <TableHeaderColumn isKey dataField="email" width='180' dataSort={true}>Email</TableHeaderColumn>
-                                        <TableHeaderColumn dataField="College" width="300"
+                                        <TableHeaderColumn dataField="College" width="300"  tdStyle={ { whiteSpace: 'normal' } }
                                             filter={{ type: 'TextFilter' }} filterFormatted dataFormat={collegeFunction}>College</TableHeaderColumn>
                                         <TableHeaderColumn dataField="createdDate" width="150" dataFormat={dateFormatter}
                                             dataSort={true}>Registered Date</TableHeaderColumn>
