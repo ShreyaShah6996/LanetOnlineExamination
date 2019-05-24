@@ -1,6 +1,7 @@
-import {ADD_QUESTION, GET_ALL_QUESTION, GET_ALL_QUESTION_FAILED, GET_ALL_TECH, GET_SUBTECHNOLOGY, INVALID_DATA} from '../Reducer/queReducer';
+import { ADD_QUESTION, GET_ALL_QUESTION, GET_ALL_QUESTION_FAILED, GET_ALL_TECH, GET_SUBTECHNOLOGY, INVALID_DATA, GET_QUESTIONBY_ID, GET_QUESTIONBY_ID_FAILED } from '../Reducer/queReducer';
 import * as queService from '../Services/queService';
 import * as techService from '../Services/techService';
+
 
 export const GetAllTechnologyAction = () => {
     return (dispatch) => {
@@ -65,6 +66,7 @@ export const AddQuestionAction = (data) => {
             })
     }
 }
+
 export const getAllQuestion = () => {
     return (dispatch) => {
         return queService.getAllQuestion()
@@ -80,6 +82,28 @@ export const getAllQuestion = () => {
                 if (error) {
                     dispatch({
                         type: GET_ALL_QUESTION_FAILED,
+                        error: "Invalid data"
+                    });
+                }
+            })
+    }
+}
+
+export const getQuestionById = (id) => {
+    return (dispatch) => {
+        return queService.getQuestionById(id)
+            .then((response) => {
+                if (response.status === 200) {
+                    dispatch({
+                        type: GET_QUESTIONBY_ID,
+                        data: response.data
+                    })
+                }
+            })
+            .catch((error) => {
+                if (error) {
+                    dispatch({
+                        type: GET_QUESTIONBY_ID_FAILED,
                         error: "Invalid data"
                     });
                 }

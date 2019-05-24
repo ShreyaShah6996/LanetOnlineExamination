@@ -50,12 +50,17 @@ class Register extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps !== this.props) {
-      let err_msg = nextProps.register_error;
+      let err_msg = nextProps.login_error;
       if (err_msg === "User already exists") {
         this.setState({ err_msg: "Email already taken!" })
       }
       else if (err_msg === "") {
-        this.props.history.push('/auth/login')
+          if(this.props.login_data.role){
+              this.props.history.push('/user/test');
+          }
+          else {
+              this.props.history.push('/admin/index');
+          }
       }
     }
   }
@@ -195,7 +200,7 @@ class Register extends React.Component {
                 </div>
           <CardBody className="">
             <Form role="form">
-              {this.props.register_error ? <span style={{ color: "red" }}>{this.state.err_msg}</span> : ""}
+              {this.props.login_error ? <span style={{ color: "red" }}>{this.state.err_msg}</span> : ""}
               <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -299,8 +304,8 @@ class Register extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    registered_data: state.auth.registered_data,
-    register_error: state.auth.register_error,
+    login_data: state.auth.login_data,
+    login_error: state.auth.login_error,
     getCollege: state.college.get_college
   }
 }

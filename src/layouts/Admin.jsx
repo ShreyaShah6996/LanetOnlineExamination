@@ -26,17 +26,24 @@ class Admin extends React.Component {
   
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      } else {
+        let role = localStorage.getItem("role");
+        if(role === "false") {
+            if (prop.layout === "/admin") {
+                return (
+                    <Route
+                        path={prop.layout + prop.path}
+                        component={prop.component}
+                        key={key}
+                    />
+                );
+            } else {
+                return null;
+            }
+        }
+        else{
+            this.props.history.push('/user/test');
+        }
         return null;
-      }
     });
   };
   getBrandText = path => {

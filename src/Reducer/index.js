@@ -7,5 +7,6 @@ import college from './collegeReducer';
 import test from './testReducer';
 import testQuestion from './testQuestionReducer';
 import question from './queReducer';
+import userTest from './userTestReducer';
 
-export default combineReducers({ auth, tech, user, college, test, testQuestion, question });
+export default combineReducers({ auth, tech, user, college, test, testQuestion, question, userTest });

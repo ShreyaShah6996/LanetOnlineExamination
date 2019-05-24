@@ -21,7 +21,8 @@ class Auth extends React.Component {
   
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      let userId = localStorage.getItem("userId");      
+      let userId = localStorage.getItem("userId");
+      let role = localStorage.getItem("role");
       if (!userId) {
         if (prop.layout === "/auth") {
           return (
@@ -37,7 +38,12 @@ class Auth extends React.Component {
         }
       }
       else {
-        this.props.history.push('/admin/index');
+        if(role==="true") {
+            this.props.history.push('/user/test');
+        }
+        else {
+            this.props.history.push('/admin/index');
+        }
       }
       return null
     });
