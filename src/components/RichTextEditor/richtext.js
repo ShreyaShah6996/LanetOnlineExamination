@@ -4,14 +4,12 @@ import { HtmlEditor, Image, Inject, Link, NodeSelection, QuickToolbar, RichTextE
 import * as React from 'react';
 import { SampleBase } from './SampleBase';
 
-
 export default class ImageSample extends SampleBase {
     state = {
         textvalue: ''
     }
     constructor() {
         super(...arguments);
-        // set the value to RichTextEditor
         this.template = '';
         this.image = ['Replace', 'Align', 'Caption', 'Remove', 'InsertLink', 'OpenImageLink', '-',
             'EditImageLink', 'RemoveImageLink', 'Display', 'AltText', 'Dimension',
@@ -27,7 +25,6 @@ export default class ImageSample extends SampleBase {
             image: this.image
         };
     }
-
     onToolbarClick(e) {
         let nodeObj = new NodeSelection();
         let range = nodeObj.getRange(this.rteObj.contentModule.getDocument());
@@ -44,17 +41,13 @@ export default class ImageSample extends SampleBase {
                 imgEle.style.transform = 'rotate(-' + (transform + 90) + 'deg)';
             }
         }
-
     }
     onchange = (e) => {
-
         this.props.handleChange(e.value, this.props.txttype);
         this.setState({ textvalue: e.value });
     }
-
     render() {
         return (
-            // <body class="material" >
             <div className='control-pane'>
                 <div className='control-section' id='rteImage' style={{ overflow: "inherit" }} >
                     <div className="content-wrapper" >
@@ -62,7 +55,6 @@ export default class ImageSample extends SampleBase {
                             style={{ position: 'sticky' }}
                             ref={(richtexteditor) => { this.rteObj = richtexteditor; }}
                             toolbarClick={this.onToolbarClick.bind(this)}
-                            valueTemplate={this.state.textvalue}
                             value={this.props.value}
                             quickToolbarSettings={this.quickToolbarSettings}
                             change={this.onchange.bind(this)}
@@ -72,7 +64,6 @@ export default class ImageSample extends SampleBase {
                     </div>
                 </div>
             </div>
-            // </body>
         );
     }
 }

@@ -58,7 +58,7 @@ class User extends React.Component {
         this.getUserData(offset, recordPerPage, this.state.fieldName, this.state.sortDirection);
     }
 
-    ActionbuttonDisplay(cell, rowData, extraData) {
+    ActionbuttonDisplay=(cell, rowData, extraData) =>{
         return (
             <Popconfirm title="Are you sure you want to delete it?" onConfirm={extraData.deleteUserHandler.bind(extraData, cell)} okText="Yes" cancelText="No">
                 <i style={{ fontSize: "25px" }} className="ni ni-fat-remove"></i>

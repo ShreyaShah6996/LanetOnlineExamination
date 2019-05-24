@@ -1,4 +1,3 @@
-import { IFrameSettings } from '@syncfusion/ej2-richtexteditor/src/rich-text-editor/models/iframe-settings';
 import classnames from 'classnames';
 import React, { Component } from 'react'
 import { ExcelRenderer } from 'react-excel-renderer';
@@ -9,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as queAction from '../../Action/queAction'
 import CustomeSwitch from '../../components/CustomeSwitch/CustomeSwitch'
 import RichTextBox from '../../components/RichTextEditor/richtext'
-
+import sample from '../../assets/excelsheet/sample.xls';
 
 class AddQuestions extends Component {
     constructor(props) {
@@ -36,12 +35,14 @@ class AddQuestions extends Component {
             selectedsubtech: null,
             ismcq: true,
             validQue: true,
+            validfile: true,
             ishide: {
                 selectsubtech: true,
                 fselectsubtech: true,
                 mcq: false,
                 fillup: true,
                 radio1: false,
+                isupload: true
             },
             textEditor: ''
         };
@@ -60,7 +61,6 @@ class AddQuestions extends Component {
         document.getElementById("selectsubtech").hidden = true;
         document.getElementById("fselectsubtech").hidden = true;
     }
-
     QuestionToggle(tab) {
         if (this.state.activeTab !== tab) {
             this.setState({
@@ -96,52 +96,97 @@ class AddQuestions extends Component {
                         document.getElementById("selectsubtech").hidden = false;
                         document.getElementById("fselectsubtech").hidden = false;
                     })
+                    this.validateUpload(selectedOption, false, null, this.state.fileJson)
+                }
+                else {
+                    this.validateUpload(selectedOption, true, null, this.state.fileJson)
                 }
             }
             return true
         })
         this.setState({
+            ...this.state,
             selectedtech: selectedOption,
             selectedsubtech: null,
-            ishide: {
-                ...this.state.ishide,
-                selectsubtech: true,
-                fselectsubtech: true
-            }
         });
     }
     SelectSubtechHandleChange = (selectedOption) => {
         this.setState({ selectedsubtech: selectedOption, validQue: true });
+        this.validateUpload(this.state.selectedtech, this.state.ishide.fselectsubtech, selectedOption, this.state.fileJson)
     }
-    fileHandler = (event) => {
-        debugger
-        let fileObj = event.target.files[0];
-
-        ExcelRenderer(fileObj, (err, resp) => {
-            if (err) {
-                console.log(err);
+    hideUpload = () => {
+        this.setState({ ishide: { ...this.state.ishide, isupload: true } })
+        document.getElementById("uploadfile").hidden = true
+    }
+    showUpload = () => {
+        this.setState({ ishide: { ...this.state.ishide, isupload: false } })
+        document.getElementById("uploadfile").hidden = false
+    }
+    validateUpload = (selectedtech, fselectsubtech, selectedsubtech, fileJson) => {
+        if (selectedtech !== null) {
+            if (!fselectsubtech) {
+                if (selectedsubtech !== null) {
+                    if (this.state.validfile && fileJson.length !== 0) {
+                        this.showUpload()
+                    }
+                    else {
+                        this.hideUpload()
+                    }
+                }
+                else {
+                    this.hideUpload()
+                }
             }
             else {
-                let jsonArray = []
-                var column = resp.rows[0]
-                var row = resp.rows.slice(1, resp.rows.length)
-                row.map((r) => {
-                    let o = {}
-                    for (let i = 0; i < r.length; i++) {
-                        let key = column[i]
-                        o = {
-                            ...o,
-                            [key]: r[i]
-                        }
+                if (this.state.validfile && fileJson.length !== 0) {
+                    this.showUpload()
+                }
+                else {
+                    this.hideUpload()
+                }
+            }
+        }
+        else {
+            this.hideUpload()
+        }
+    }
+    fileHandler = (event) => {
+        this.setState({ validfile: true })
+        let fileObj = event.target.files[0];
+        if (fileObj !== undefined) {
+            let fname = fileObj.name
+            let ext = fname.split(".")
+            const extension = ext[1];
+            if (extension === "xlsx" || extension === "xls") {
+                ExcelRenderer(fileObj, (err, resp) => {
+                    if (!err) {                  
+                        let jsonArray = []
+                        var column = resp.rows[0]
+                        var row = resp.rows.slice(1, resp.rows.length)
+                        row.map((r) => {
+                            let o = {}
+                            for (let i = 0; i < r.length; i++) {
+                                let key = column[i]
+                                o = {
+                                    ...o,
+                                    [key]: r[i]
+                                }
+                            }
+                            jsonArray.push(o);
+                            return true
+                        })
+                        this.setState({
+                            fileJson: jsonArray
+                        });
+                        this.validateUpload(this.state.selectedtech, this.state.ishide.fselectsubtech, this.state.selectedsubtech, jsonArray);
                     }
-                    jsonArray.push(o);
-                    return true
-                })
-                this.setState({
-                    fileJson: jsonArray
                 });
             }
-        });
+            else {
+                this.setState({ validfile: false })
+                this.hideUpload()
+            }
+        }
     }
     UploadFile = () => {
         const techid = (this.state.selectedtech !== null) ? this.state.selectedtech.value : 0;
@@ -153,15 +198,12 @@ class AddQuestions extends Component {
                 subTechId: parseInt(subtechid),
             }
         })
-
         let qobj = {
             questions: fobj
         }
-
         this.props.queaction.AddQuestionAction(qobj)
     }
-    mcqClick() {
-
+    mcqClick = () => {
         this.setState({
             ismcq: true,
             validQue: true,
@@ -170,10 +212,9 @@ class AddQuestions extends Component {
                 mcq: false,
                 fillup: true
             }
-        });
+        })
     }
-
-    fillUpClick() {
+    fillUpClick = () => {
         this.setState({
             ismcq: false,
             validQue: true,
@@ -182,7 +223,7 @@ class AddQuestions extends Component {
                 mcq: true,
                 fillup: false
             }
-        });
+        })
     }
     EditToggle_a = () => {
         this.setState({ checked_a: !this.state.checked_a, validQue: true });
@@ -202,7 +243,6 @@ class AddQuestions extends Component {
         const techid = (state.selectedtech !== null) ? state.selectedtech.value : null;
         const subtechid = (state.selectedsubtech !== null) ? state.selectedsubtech.value : null;
         let obj, ans
-
         if (state.ismcq) {
             a = (state.checked_a) ? state.eopt_a : state.op_a
             b = (state.checked_b) ? state.eopt_b : state.op_b
@@ -224,7 +264,6 @@ class AddQuestions extends Component {
             d: d,
             answer: ans
         }
-        debugger
         if (obj.techId === null || (obj.subTechId === null && !state.ishide.selectsubtech) || obj.question === "" || obj.a === "" || obj.b === "" || obj.c === "" || obj.d === "" || obj.answer === "") {
             this.setState({ validQue: false })
         }
@@ -258,13 +297,10 @@ class AddQuestions extends Component {
                         radio1: false,
                     }
                 })
-
             });
         }
-        console.log("final que", obj)
     }
     onChangeAnswer = (e) => {
-        debugger;
         if (e.target.id === 'fillup') {
             this.setState({ fanswer: e.target.value })
         }
@@ -274,29 +310,25 @@ class AddQuestions extends Component {
     }
     onChangeOption = (e) => {
         if (e.target.id === "op_a") {
-            this.setState({ op_a: e.target.value })
+            this.setState({ op_a: e.target.value });
         }
         else if (e.target.id === "op_b") {
-            this.setState({ op_b: e.target.value })
+            this.setState({ op_b: e.target.value });
         }
         else if (e.target.id === "op_c") {
-            this.setState({ op_c: e.target.value })
+            this.setState({ op_c: e.target.value });
         }
         else {
-            this.setState({ op_d: e.target.value })
+            this.setState({ op_d: e.target.value });
         }
-        this.setState({ validQue: true })
-
+        this.setState({ validQue: true });
     }
-
     handleChange = (value, type) => {
         this.setState({ [type]: value, validQue: true });
     }
-
     render() {
         var techoptions = []
         var subtechoptions = []
-
         this.props.technology.map((t) => {
             let obj = {
                 value: t.techId,
@@ -305,7 +337,6 @@ class AddQuestions extends Component {
             techoptions.push(obj)
             return true;
         })
-
         this.props.subtechnology.map((st) => {
             let obj = {
                 value: st.subTechId,
@@ -315,7 +346,6 @@ class AddQuestions extends Component {
 
             return true;
         })
-
         return (
             <div>
                 <Row style={{ marginTop: "10px" }}>
@@ -340,7 +370,6 @@ class AddQuestions extends Component {
                                     </NavLink>
                                 </NavItem>
                             </Nav>
-                            {/* <div dangerouslySetInnerHTML={{__html: this.state.textEditor}} /> */}
                             <TabContent activeTab={this.state.activeTab}>
                                 <TabPane tabId="1">
                                     <Row>
@@ -365,12 +394,10 @@ class AddQuestions extends Component {
                                                     options={subtechoptions}
                                                 />
                                                 <br />
-
                                                 <Form>
                                                     <FormGroup>
                                                         {/* question editor */}
                                                         <RichTextBox txttype='glob_que' value={this.state.glob_que} text="Enter Question" handleChange={this.handleChange} />
-
                                                     </FormGroup>
                                                     <FormGroup style={{ float: "right", cursor: "pointer" }}>
                                                         <Badge color="primary" pill onClick={this.mcqClick.bind(this)}>MCQ</Badge>{' '}
@@ -379,78 +406,78 @@ class AddQuestions extends Component {
                                                     <div>
                                                         <Table id="mcq" hidden={this.state.ishide.mcq}>
                                                             <thead className="thead-light">
-                                                            <tr>
-                                                                <th scope="col">Sr.No</th>
-                                                                <th scope="col">Option</th>
-                                                                <th scope="col">Text with Image</th>
-                                                                <th scope="col">Answer</th>
-                                                            </tr>
+                                                                <tr>
+                                                                    <th scope="col">Sr.No</th>
+                                                                    <th scope="col">Option</th>
+                                                                    <th scope="col">Text with Image</th>
+                                                                    <th scope="col">Answer</th>
+                                                                </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr>
-                                                                <td>a</td>
-                                                                <td>
-                                                                    <div style={{ width: '650px' }}>
-                                                                        {(this.state.checked_a)
-                                                                            ? (<RichTextBox txttype='eopt_a' value={this.state.eopt_a} text="Enter Option" handleChange={this.handleChange} />)
-                                                                            : (<Input type="text" id="op_a" value={this.state.op_a} onChange={this.onChangeOption.bind(this)} placeholder="Option a" />)}
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <CustomeSwitch
-                                                                        onChange={this.EditToggle_a}
-                                                                        checked={this.state.checked_a} />
-                                                                </td>
-                                                                <td><Input value="a" style={{ marginLeft: "20px" }} type="radio" id="radio1" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>b</td>
-                                                                <td>
-                                                                    <div style={{ width: '650px' }}>
-                                                                        {(this.state.checked_b)
-                                                                            ? (<RichTextBox txttype='eopt_b' value={this.state.eopt_b} text="Enter Option" handleChange={this.handleChange} />)
-                                                                            : (<Input type="text" id="op_b" value={this.state.op_b} placeholder="Option b" onChange={this.onChangeOption.bind(this)} />)}
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <CustomeSwitch
-                                                                        onChange={this.EditToggle_b}
-                                                                        checked={this.state.checked_b} />
-                                                                </td>
-                                                                <td><Input value="b" style={{ marginLeft: "20px" }} type="radio" id="radio2" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>c</td>
-                                                                <td>
-                                                                    <div style={{ width: '650px' }}>
-                                                                        {(this.state.checked_c)
-                                                                            ? (<RichTextBox txttype='eopt_c' value={this.state.eopt_c} text="Enter Option" handleChange={this.handleChange} />)
-                                                                            : (<Input type="text" id="op_c" value={this.state.op_c} placeholder="Option c" onChange={this.onChangeOption.bind(this)} />)}
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <CustomeSwitch
-                                                                        onChange={this.EditToggle_c}
-                                                                        checked={this.state.checked_c} />
-                                                                </td>
-                                                                <td><Input value="c" style={{ marginLeft: "20px" }} type="radio" id="radio3" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>d</td>
-                                                                <td>
-                                                                    <div style={{ width: '650px' }}>
-                                                                        {(this.state.checked_d)
-                                                                            ? (<RichTextBox txttype='eopt_d' value={this.state.eopt_d} text="Enter Option" handleChange={this.handleChange} />)
-                                                                            : (<Input type="text" id="op_d" value={this.state.op_d} placeholder="Option d" onChange={this.onChangeOption.bind(this)} />)}
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <CustomeSwitch
-                                                                        onChange={this.EditToggle_d}
-                                                                        checked={this.state.checked_d} />
-                                                                </td>
-                                                                <td><Input value="d" style={{ marginLeft: "20px" }} type="radio" id="radio4" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                            </tr>
+                                                                <tr>
+                                                                    <td>a</td>
+                                                                    <td>
+                                                                        <div style={{ width: '650px' }}>
+                                                                            {(this.state.checked_a)
+                                                                                ? (<RichTextBox txttype='eopt_a' value={this.state.eopt_a} text="Enter Option" handleChange={this.handleChange} />)
+                                                                                : (<Input type="text" id="op_a" value={this.state.op_a} onChange={this.onChangeOption.bind(this)} placeholder="Option a" />)}
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <CustomeSwitch
+                                                                            onChange={this.EditToggle_a}
+                                                                            checked={this.state.checked_a} />
+                                                                    </td>
+                                                                    <td><Input value="a" style={{ marginLeft: "20px" }} type="radio" id="radio1" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>b</td>
+                                                                    <td>
+                                                                        <div style={{ width: '650px' }}>
+                                                                            {(this.state.checked_b)
+                                                                                ? (<RichTextBox txttype='eopt_b' value={this.state.eopt_b} text="Enter Option" handleChange={this.handleChange} />)
+                                                                                : (<Input type="text" id="op_b" value={this.state.op_b} placeholder="Option b" onChange={this.onChangeOption.bind(this)} />)}
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <CustomeSwitch
+                                                                            onChange={this.EditToggle_b}
+                                                                            checked={this.state.checked_b} />
+                                                                    </td>
+                                                                    <td><Input value="b" style={{ marginLeft: "20px" }} type="radio" id="radio2" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>c</td>
+                                                                    <td>
+                                                                        <div style={{ width: '650px' }}>
+                                                                            {(this.state.checked_c)
+                                                                                ? (<RichTextBox txttype='eopt_c' value={this.state.eopt_c} text="Enter Option" handleChange={this.handleChange} />)
+                                                                                : (<Input type="text" id="op_c" value={this.state.op_c} placeholder="Option c" onChange={this.onChangeOption.bind(this)} />)}
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <CustomeSwitch
+                                                                            onChange={this.EditToggle_c}
+                                                                            checked={this.state.checked_c} />
+                                                                    </td>
+                                                                    <td><Input value="c" style={{ marginLeft: "20px" }} type="radio" id="radio3" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>d</td>
+                                                                    <td>
+                                                                        <div style={{ width: '650px' }}>
+                                                                            {(this.state.checked_d)
+                                                                                ? (<RichTextBox txttype='eopt_d' value={this.state.eopt_d} text="Enter Option" handleChange={this.handleChange} />)
+                                                                                : (<Input type="text" id="op_d" value={this.state.op_d} placeholder="Option d" onChange={this.onChangeOption.bind(this)} />)}
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <CustomeSwitch
+                                                                            onChange={this.EditToggle_d}
+                                                                            checked={this.state.checked_d} />
+                                                                    </td>
+                                                                    <td><Input value="d" style={{ marginLeft: "20px" }} type="radio" id="radio4" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                                </tr>
                                                             </tbody>
                                                         </Table>
                                                         <Input id="fillup" value={this.state.fanswer} hidden={this.state.ishide.fillup} type="text" placeholder="Answer" onChange={this.onChangeAnswer.bind(this)} />
@@ -458,13 +485,10 @@ class AddQuestions extends Component {
                                                     <Button onClick={this.addQuestion} style={{ float: "right", margin: "15px" }}>Add Question</Button>
                                                 </Form>
                                             </CardBody>
-                                            <div hidden={this.state.validQue} style={{ color: 'red' }}>Please fill the all details</div>
+                                            <div hidden={this.state.validQue} style={{ color: 'red' }}>*Please fill the all details</div>
                                         </Container>
-
                                     </Row>
-
                                 </TabPane>
-
                                 <TabPane tabId="2">
                                     <Row>
                                         <Col sm="8">
@@ -486,7 +510,9 @@ class AddQuestions extends Component {
                                                     options={subtechoptions}
                                                 />
                                                 <input type="file" onChange={this.fileHandler.bind(this)} style={{ margin: "20px" }} />
-                                                <Button onClick={this.UploadFile}>Upload</Button>
+                                                <div hidden={this.state.validfile} style={{ color: 'red' }}>*Accepts only Excel file</div><br />
+                                                <a href={sample}>Sample Excel file</a>
+                                                <Button id="uploadfile" hidden onClick={this.UploadFile}>Upload</Button>
                                             </Card>
                                         </Col>
                                     </Row>
@@ -496,9 +522,10 @@ class AddQuestions extends Component {
                     </div>
                 </Row>
             </div>
-        );
+        )
     }
 }
+
 const mapStateToProps = (state) => {
     return {
         technology: state.question.alltech,
