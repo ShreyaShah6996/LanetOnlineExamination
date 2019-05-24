@@ -160,7 +160,7 @@ class AddQuestions extends Component {
             const extension = ext[1];
             if (extension === "xlsx" || extension === "xls") {
                 ExcelRenderer(fileObj, (err, resp) => {
-                    if (!err) {                  
+                    if (!err) {
                         let jsonArray = []
                         var column = resp.rows[0]
                         var row = resp.rows.slice(1, resp.rows.length)
@@ -308,7 +308,7 @@ class AddQuestions extends Component {
                 selectsubtech: true,
                 fselectsubtech: true,
             }
-        }) 
+        })
     }
     onChangeAnswer = (e) => {
         if (e.target.id === 'fillup') {
@@ -415,78 +415,78 @@ class AddQuestions extends Component {
                                                     <div>
                                                         <Table id="mcq" hidden={this.state.ishide.mcq}>
                                                             <thead className="thead-light">
-                                                                <tr>
-                                                                    <th scope="col">Sr.No</th>
-                                                                    <th scope="col">Option</th>
-                                                                    <th scope="col">Text with Image</th>
-                                                                    <th scope="col">Answer</th>
-                                                                </tr>
+                                                            <tr>
+                                                                <th scope="col">Sr.No</th>
+                                                                <th scope="col">Option</th>
+                                                                <th scope="col">Text with Image</th>
+                                                                <th scope="col">Answer</th>
+                                                            </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td>a</td>
-                                                                    <td>
-                                                                        <div style={{ width: '650px' }}>
-                                                                            {(this.state.checked_a)
-                                                                                ? (<RichTextBox txttype='eopt_a' value={this.state.eopt_a} text="Enter Option" handleChange={this.handleChange} />)
-                                                                                : (<Input type="text" id="op_a" value={this.state.op_a} onChange={this.onChangeOption.bind(this)} placeholder="Option a" />)}
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <CustomeSwitch
-                                                                            onChange={this.EditToggle_a}
-                                                                            checked={this.state.checked_a} />
-                                                                    </td>
-                                                                    <td><Input value="a" style={{ marginLeft: "20px" }} type="radio" id="radio1" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>b</td>
-                                                                    <td>
-                                                                        <div style={{ width: '650px' }}>
-                                                                            {(this.state.checked_b)
-                                                                                ? (<RichTextBox txttype='eopt_b' value={this.state.eopt_b} text="Enter Option" handleChange={this.handleChange} />)
-                                                                                : (<Input type="text" id="op_b" value={this.state.op_b} placeholder="Option b" onChange={this.onChangeOption.bind(this)} />)}
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <CustomeSwitch
-                                                                            onChange={this.EditToggle_b}
-                                                                            checked={this.state.checked_b} />
-                                                                    </td>
-                                                                    <td><Input value="b" style={{ marginLeft: "20px" }} type="radio" id="radio2" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>c</td>
-                                                                    <td>
-                                                                        <div style={{ width: '650px' }}>
-                                                                            {(this.state.checked_c)
-                                                                                ? (<RichTextBox txttype='eopt_c' value={this.state.eopt_c} text="Enter Option" handleChange={this.handleChange} />)
-                                                                                : (<Input type="text" id="op_c" value={this.state.op_c} placeholder="Option c" onChange={this.onChangeOption.bind(this)} />)}
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <CustomeSwitch
-                                                                            onChange={this.EditToggle_c}
-                                                                            checked={this.state.checked_c} />
-                                                                    </td>
-                                                                    <td><Input value="c" style={{ marginLeft: "20px" }} type="radio" id="radio3" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>d</td>
-                                                                    <td>
-                                                                        <div style={{ width: '650px' }}>
-                                                                            {(this.state.checked_d)
-                                                                                ? (<RichTextBox txttype='eopt_d' value={this.state.eopt_d} text="Enter Option" handleChange={this.handleChange} />)
-                                                                                : (<Input type="text" id="op_d" value={this.state.op_d} placeholder="Option d" onChange={this.onChangeOption.bind(this)} />)}
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <CustomeSwitch
-                                                                            onChange={this.EditToggle_d}
-                                                                            checked={this.state.checked_d} />
-                                                                    </td>
-                                                                    <td><Input value="d" style={{ marginLeft: "20px" }} type="radio" id="radio4" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
-                                                                </tr>
+                                                            <tr>
+                                                                <td>a</td>
+                                                                <td>
+                                                                    <div style={{ width: '650px' }}>
+                                                                        {(this.state.checked_a)
+                                                                            ? (<RichTextBox txttype='eopt_a' value={this.state.eopt_a} text="Enter Option" handleChange={this.handleChange} />)
+                                                                            : (<Input type="text" id="op_a" value={this.state.op_a} onChange={this.onChangeOption.bind(this)} placeholder="Option a" />)}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <CustomeSwitch
+                                                                        onChange={this.EditToggle_a}
+                                                                        checked={this.state.checked_a} />
+                                                                </td>
+                                                                <td><Input value="a" style={{ marginLeft: "20px" }} type="radio" id="radio1" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>b</td>
+                                                                <td>
+                                                                    <div style={{ width: '650px' }}>
+                                                                        {(this.state.checked_b)
+                                                                            ? (<RichTextBox txttype='eopt_b' value={this.state.eopt_b} text="Enter Option" handleChange={this.handleChange} />)
+                                                                            : (<Input type="text" id="op_b" value={this.state.op_b} placeholder="Option b" onChange={this.onChangeOption.bind(this)} />)}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <CustomeSwitch
+                                                                        onChange={this.EditToggle_b}
+                                                                        checked={this.state.checked_b} />
+                                                                </td>
+                                                                <td><Input value="b" style={{ marginLeft: "20px" }} type="radio" id="radio2" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>c</td>
+                                                                <td>
+                                                                    <div style={{ width: '650px' }}>
+                                                                        {(this.state.checked_c)
+                                                                            ? (<RichTextBox txttype='eopt_c' value={this.state.eopt_c} text="Enter Option" handleChange={this.handleChange} />)
+                                                                            : (<Input type="text" id="op_c" value={this.state.op_c} placeholder="Option c" onChange={this.onChangeOption.bind(this)} />)}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <CustomeSwitch
+                                                                        onChange={this.EditToggle_c}
+                                                                        checked={this.state.checked_c} />
+                                                                </td>
+                                                                <td><Input value="c" style={{ marginLeft: "20px" }} type="radio" id="radio3" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>d</td>
+                                                                <td>
+                                                                    <div style={{ width: '650px' }}>
+                                                                        {(this.state.checked_d)
+                                                                            ? (<RichTextBox txttype='eopt_d' value={this.state.eopt_d} text="Enter Option" handleChange={this.handleChange} />)
+                                                                            : (<Input type="text" id="op_d" value={this.state.op_d} placeholder="Option d" onChange={this.onChangeOption.bind(this)} />)}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <CustomeSwitch
+                                                                        onChange={this.EditToggle_d}
+                                                                        checked={this.state.checked_d} />
+                                                                </td>
+                                                                <td><Input value="d" style={{ marginLeft: "20px" }} type="radio" id="radio4" name="radio1" onChange={this.onChangeAnswer.bind(this)} /></td>
+                                                            </tr>
                                                             </tbody>
                                                         </Table>
                                                         <Input id="fillup" value={this.state.fanswer} hidden={this.state.ishide.fillup} type="text" placeholder="Answer" onChange={this.onChangeAnswer.bind(this)} />
