@@ -43,7 +43,7 @@ export const shuffleQuestion = (testId, testQuesId) => {
             .catch((error) => {
                 dispatch({
                     type: GET_TEST_QUESTION_FAILED,
-                    test_question_error: error.response.data.error
+                    test_question_error: error.response && error.response.data.error
                 })
             })
     }
@@ -68,7 +68,7 @@ export const updateQuestion = (testId, testQuesId,quesId) => {
             .catch((error) => {
                 dispatch({
                     type: UPDATE_QUESTION_FAILED,
-                    test_question_error: error.response.data.error
+                    test_question_error: error.response && error.response.data.error
                 })
             })
     }

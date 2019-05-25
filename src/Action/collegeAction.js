@@ -15,7 +15,7 @@ export const GetCollege = () => {
             .catch((error) => {
                 dispatch({
                     type: GET_COLLEGE_FAILED,
-                    getCollegeError: error.response.data.error
+                    getCollegeError: error.response&& error.response.data.error
                 })
             })
     }

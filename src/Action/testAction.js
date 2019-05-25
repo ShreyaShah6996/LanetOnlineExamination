@@ -40,7 +40,7 @@ export const getTest = (pageNo, recordPerPage, fieldName, sortDirection) => {
             .catch((error) => {
                 dispatch({
                     type: GET_TEST_FAILED,
-                    get_test_error: error.response.data.error
+                    get_test_error: error.response && error.response.data.error
                 })
             })
     }
@@ -60,7 +60,7 @@ export const getAllTest = () => {
             .catch((error) => {
                 dispatch({
                     type: GET_ALL_TEST_FAILED,
-                    get_all_error: error.response.data.error
+                    get_all_error: error.response && error.response.data.error
                 })
             })
     }
@@ -83,7 +83,7 @@ export const deleteTest = (testId, pageNo, recordPerPage, fieldName, sortDirecti
             if (error.response) {
                 dispatch({
                     type: DELETE_TEST_FAILED,
-                    deleteTestError: error.response.data.error
+                    deleteTestError: error.response && error.response.data.error
                 });
             }
         })

@@ -15,7 +15,7 @@ export const getUser = (pageNo, recordPerPage, fieldName, sortDirection) => {
             .catch((error) => {
                 dispatch({
                     type: GET_USER_FAILED,
-                    getUserError: error.response.data.error
+                    getUserError: error.response && error.response.data.error
                 })
             })
     }
@@ -35,7 +35,7 @@ export const getAllUser = () => {
             .catch((error) => {
                 dispatch({
                     type: GET_USER_FAILED,
-                    getUserError: error.response.data.error
+                    getUserError: error.response && error.response.data.error
                 })
             })
     }
@@ -58,7 +58,7 @@ export const deleteUser = (userId, pageNo, recordPerPage, fieldName, sortDirecti
             if (error.response) {
                 dispatch({
                     type: DELETE_USER_FAILED,
-                    deleteUserError: error.response.data.error
+                    deleteUserError:error.response && error.response.data.error
                 });
             }
         })
@@ -79,7 +79,7 @@ export const search = (searchTerm) => {
             .catch((error) => {
                 dispatch({
                     type: SEARCH_FAILED,
-                    searchError: error.response.data.error
+                    searchError: error.response && error.response.data.error
                 })
             })
     }

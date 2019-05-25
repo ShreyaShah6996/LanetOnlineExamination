@@ -15,7 +15,7 @@ export const getUserData = (id) => {
             .catch((error) => {
                 dispatch({
                     type: GET_USERDATA_FAILED,
-                    getUserDataError: error.response.data.error
+                    getUserDataError: error.response && error.response.data.error
                 })
             })
     }

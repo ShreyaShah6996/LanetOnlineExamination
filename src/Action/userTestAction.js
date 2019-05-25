@@ -15,7 +15,7 @@ export const addUserTest = (data) => {
             .catch((error) => {
                 dispatch({
                     type: ADD_USERTEST_FAILED,
-                    addUserTestError: error.response.data.error
+                    addUserTestError: error.response && error.response.data.error
                 })
             })
     }
@@ -35,7 +35,7 @@ export const getUserTest = (id) => {
             .catch((error) => {
                 dispatch({
                     type: GET_USERTEST_FAILED,
-                    getUserTestError: error.response.data.error
+                    getUserTestError:error.response && error.response.data.error
                 })
             })
     }
@@ -56,7 +56,7 @@ export const updateUserTest = (userTestId, data) => {
             .catch((error) => {
                 dispatch({
                     type: UPDATE_USERTEST_FAILED,
-                    updateUserTestError: error.response.data.error
+                    updateUserTestError: error.response && error.response.data.error
                 })
             })
     }

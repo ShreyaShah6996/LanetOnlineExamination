@@ -30,7 +30,7 @@ export const RegisterUser = (credentials) => {
                 if (error) {
                     dispatch({
                         type: LOGIN_FAIL,
-                        login_error: error.response.data.error
+                        login_error: error.response && error.response.data.error
                     });
                 }
             })
@@ -57,7 +57,7 @@ export const LoginUser = (credentials) => {
                 if (error) {
                     dispatch({
                         type: LOGIN_FAIL,
-                        login_error: error.response.data.error
+                        login_error: error.response && error.response.data.error
                     });
                 }
             })
