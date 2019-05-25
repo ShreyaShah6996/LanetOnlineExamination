@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { Popconfirm, Input as antInput } from 'antd';
 import 'antd/dist/antd.css';
+import './User.css';
 import '../../assets/css/styles.css';
 import Header from "components/Headers/Header.jsx";
 import * as userAction from '../../Action/userAction';
@@ -109,21 +110,22 @@ class User extends React.Component {
                                 <CardHeader className=" bg-transparent">
                                     <h3 className=" mb-0">User</h3>
                                 </CardHeader>
-                                <Container style={{ marginTop: "5px", marginLeft: "10px",display: "flex "}}>
-                                    <Input type="select" name="select" style={{ width: "8%" }} onChange={this.recordPerPageChangeHandler.bind(this)} >
-                                        <option value="5">5</option>
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="All">All</option>
-                                    </Input>
-                                </Container>
                                 <br />
-                                <Search placeholder="input search text"  style={{ width: "30%", marginLeft: "24px" }} onSearch={searchTerm => this.btnSearch(searchTerm)} enterButton />
-                                
-                                <PDFGenerator data={this.props.get_limited_user} />
                                 <CardBody>
+                                    <div class="records_per_page" >
+                                        <Input type="select" name="select" className="records_per_page_input" onChange={this.recordPerPageChangeHandler.bind(this)} >
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                            <option value="All">All</option>
+                                        </Input>
+                                        <div class="search_pdf_btn_div">
+                                            <Search placeholder="input search text" size="large" onSearch={searchTerm => this.btnSearch(searchTerm)} enterButton />
+                                            <PDFGenerator data={this.props.get_limited_user} />
+                                        </div>
+                                    </div>
                                     <BootstrapTable data={users} striped hover>
                                         <TableHeaderColumn dataField='firstName' dataFormat={NameDisplay} width='180' dataSort={true}>Name</TableHeaderColumn>
                                         <TableHeaderColumn isKey dataField="email" width='180' dataSort={true}>Email</TableHeaderColumn>

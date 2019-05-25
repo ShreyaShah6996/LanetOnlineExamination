@@ -1,6 +1,7 @@
 import FirstPage from './User/FirstPage/firstPage';
 import TestDescription from "./User/Test/TestDescription";
 import Question from "./User/Test/Question";
+import Result from "./User/Test/Result"
 var userRoutes = [
     {
       path: "/test",
@@ -18,6 +19,12 @@ var userRoutes = [
         path: "/question/:id",
         icon: "ni ni-planet text-blue",
         component: Question,
+        layout: "/user"
+    },
+    {
+        path: "/testResult/:userTestId",
+        icon: "ni ni-planet text-blue",
+        component: Result,
         layout: "/user"
     },
 ];

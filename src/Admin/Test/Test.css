@@ -1,0 +1,15 @@
+.error_show{
+    color: red;
+}
+.List_ratio{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.all_tech_input{
+    height: 33px;
+    width: 30%;
+    border-radius: 7px;
+    border:1px solid #b3b3b3;
+    padding: 9px;
+}

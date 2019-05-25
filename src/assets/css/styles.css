@@ -148,6 +148,22 @@ span.ant-time-picker {
     background-color: #c9c9c9;
     border-color: #c9c9c9;
 }
+.qustion-option .thead-light tr th{
+    font-size: 0.60rem;
+}
+/*---first page test page--*/
+.footer footer_first_page{
+    background:#fff;
+}
+.Test_table_main_div{
+    background-color:#f7f7f7;
+    min-height:580px;
+    display: flex;
+    align-items: center;
+}
+.Test_table{
+    text-align:center;
+}
 @media only screen and (min-width:320px) and (max-width:1024px) {
     .reg-frm {
         padding: 0;
@@ -156,5 +172,3 @@ span.ant-time-picker {
         width: 83% !important;
     }
 }
-
-;

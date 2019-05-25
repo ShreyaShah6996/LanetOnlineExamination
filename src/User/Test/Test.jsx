@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Button } from 'reactstrap';
+import { Table, Button,Container } from 'reactstrap';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -41,20 +41,24 @@ class Test extends Component {
 
         return (
             <React.Fragment>
-                <div style={{ margin: " 5% 30%" }}>
-                    <Table responsive style={{ textAlign: "center" }}>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Test</th>
-                                <th>Duration</th>
-                                <th>Take Test</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(data.length > 0) ? data : null}
-                        </tbody>
-                    </Table>
+                <div className="Test_table_main_div">
+                    <Container>
+                        <div className="Test_table">
+                            <Table responsive>
+                                <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Test</th>
+                                            <th>Duration</th>
+                                            <th>Take Test</th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                                        {(data.length > 0) ? data : null}
+                                    </tbody>
+                            </Table>
+                        </div>
+                    </Container>
                 </div>
             </React.Fragment>
         );

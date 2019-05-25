@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Button, Container, Form, FormGroup, Input, Label } from "reactstrap";
 import { bindActionCreators } from 'redux';
 import * as techAction from '../../Action/techAction'
+import './Technologyquestion.css';
 
 
 class AddTechnology extends Component {
@@ -308,7 +309,7 @@ class AddTechnology extends Component {
                         : ""}
                     <Input type="text" id={"subtech" + JSON.stringify(value)} name={"subtech" + JSON.stringify(value)}
                         placeholder="Sub-Technology"
-                        style={{ marginBottom: "5px" }}
+                        className="Sub-Technology-input"
                         key={value}
                         value={stechvalue}
                         onChange={this.onChangeSubtechnology.bind(this)} />
@@ -319,16 +320,16 @@ class AddTechnology extends Component {
         return (
             <div>
                 <i className="ni ni-fat-add" hidden={this.state.ishide.plusIcon} style={{ fontSize: "40px" }} id="plusIcon" onClick={this.plusTechnology}></i>
-                <Container id="AddTechForm" hidden={this.state.ishide.AddTechForm} style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
+                <div class="addtech_form" id="AddTechForm" hidden={this.state.ishide.AddTechForm}>
                     <Form>
-                        <h3 style={{ marginTop: "6px" }}>{this.props.isedit ? "Update Technology" : "Add Technology"} </h3>
+                        <h3>{this.props.isedit ? "Update Technology" : "Add Technology"} </h3>
                         <FormGroup>
                             <Input type="text" id="technology" name="technology" value={this.state.technology} placeholder="Technology" onChange={this.onChangeTechnology.bind(this)} />
                         </FormGroup>
-                        <FormGroup check style={{ marginTop: "10px", marginBottom: "15px", fontSize: "15px" }}>
+                        <FormGroup  className="custom_form_group" check>
                             <Label check>
                                 <Input type="checkbox" id="level" checked={this.state.checked} onChange={this.checked.bind(this)} disabled={this.state.ishide.level} />{' '}
-                                <div style={{ marginLeft: '20px' }}>Want to add Level?</div>
+                                <div class="add_checkbox">Want to add Level?</div>
                             </Label>
                         </FormGroup>
                         <FormGroup>
@@ -336,9 +337,9 @@ class AddTechnology extends Component {
                             <Button id="cancelTech" hidden={this.state.ishide.cancelTech} onClick={this.cancelTechnology}>Cancel</Button>
                         </FormGroup>
                     </Form>
-                    <Container id="AddSubTechForm" hidden={this.state.ishide.AddSubTechForm} style={{ border: "1px solid lightgrey", borderRadius: "6px", marginBottom: "10px" }}>
+                    <Container className="Addsubtech_form" id="AddSubTechForm" hidden={this.state.ishide.AddSubTechForm}>
                         <Form>
-                            <h3 style={{ marginTop: "6px" }}>{this.props.isedit ? "Update Sub-Technology" : "Add Sub-Technology"}</h3>
+                            <h3>{this.props.isedit ? "Update Sub-Technology" : "Add Sub-Technology"}</h3>
                             <FormGroup>
                                 {this.state.subTechInput
                                     ? <div className='header-center mt10'>
@@ -351,8 +352,8 @@ class AddTechnology extends Component {
                             </FormGroup>
                         </Form>
                     </Container>
-                    <div hidden={this.state.isempty} style={{ color: 'red' }}>* Please fill the all details.</div>
-                </Container>
+                    <div class="error_input_box" hidden={this.state.isempty}>* Please fill the all details.</div>
+                </div>
             </div>
         );
     }

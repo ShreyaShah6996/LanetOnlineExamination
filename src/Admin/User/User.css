@@ -1,0 +1,16 @@
+.records_per_page{
+    display: flex;
+    margin:10px 0;
+}
+.records_per_page_input{
+    width: 8%;
+}
+.search_pdf_btn_div{
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+}
+.search_pdf_btn_div .ant-input-search{
+    width: 30%;
+    margin-right:24px;
+}

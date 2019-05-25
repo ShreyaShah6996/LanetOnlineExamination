@@ -1,0 +1,48 @@
+.addtech_form{
+    padding:0 15px;
+    border: 1px solid lightgrey;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+.addtech_form form h3,.Addsubtech_form form h3{
+    margin-top: 6px;
+}
+.custom_form_group{
+    margin-top: 10px;
+    margin-bottom:15px;
+    font-size:15px;
+}
+.add_checkbox{
+    margin-left:7px;
+}
+.Addsubtech_form{
+    border: 1px solid lightgrey;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+.error_input_box{
+    color: red;
+}
+.Sub-Technology-input{
+    margin-bottom: 5px;
+}
+.badge_1{
+    float: right;
+    cursor:pointer;
+}
+.add_question{
+    float:right;
+    margin: 15px;
+}
+.redio_input{
+     position: unset;
+     margin-top: 0.3rem;
+     margin-left: -1.25rem;
+ }
+.qustion-option_tbody tr td{
+    text-align: center;
+}
+.records_per_page_input_1{
+    width: 8%;
+    margin-bottom:10px;
+}

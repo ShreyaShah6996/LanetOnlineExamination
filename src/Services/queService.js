@@ -1,4 +1,6 @@
 import BaseService from './baseService';
+
+
 export function AddQuestion(data) {
     return BaseService.post('api/question', data);
 }

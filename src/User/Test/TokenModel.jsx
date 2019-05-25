@@ -8,7 +8,6 @@ import { Modal, ModalBody, Button, Form, FormGroup, Input } from 'reactstrap';
 import * as testQuestionAction from '../../Action/testQuestionAction';
 import * as userTestAction from '../../Action/userTestAction';
 
-export let randomQuestions = [];
 class TokenModel extends PureComponent {
     constructor(props) {
         super(props);
@@ -32,8 +31,10 @@ class TokenModel extends PureComponent {
                 let ids = quesId.map((quesid) => {
                     return quesid.quesId;
                 })
+
                 var questions = ids;
                 var noQuestion = ids.length;
+                let randomQuestions = [];
                 while (noQuestion > 0) {
                     var random1 = Math.floor(Math.random() * questions.length);
                     var choice1 = questions[random1];
@@ -41,18 +42,19 @@ class TokenModel extends PureComponent {
                     randomQuestions.push(choice1);
                     noQuestion--;
                 }
+
+
                 let updatedQuestions = randomQuestions.map((randomQues) => {
-                    let newQuestion = quesId.filter((ques) => {
-                        return ques.quesId === randomQues
-                    })
-                    return newQuestion[0];
+                    let newQuestion = { quesId: randomQues, answer: "", status: false };
+                    return newQuestion;
                 })
                 let userTestObj = {
-                    userId: parseInt(localStorage.getItem("userId")),
+                    userId: 2,
                     testId: parseInt(test[0].testId),
                     question: JSON.stringify(updatedQuestions),
                     lastQuesId: updatedQuestions[0].quesId
                 }
+
                 this.props.action.UserTestAction.addUserTest(userTestObj).then((res) => {
                     let { userTestId } = this.props.userTest;
                     this.props.action.UserTestAction.getUserTest(userTestId)
@@ -60,7 +62,9 @@ class TokenModel extends PureComponent {
                 });
 
             });
+
             this.props.toggle();
+
             this.setState({ token: "" });
         }
         else {
@@ -71,6 +75,7 @@ class TokenModel extends PureComponent {
     onCancel = () => {
         this.setState({ token: "", errMsg: false });
         this.props.toggle();
+
     }
 
     render() {
@@ -120,5 +125,6 @@ const mapDispatchToProps = (dispatch) => ({
         UserTestAction: bindActionCreators(userTestAction, dispatch)
     }
 })
+
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TokenModel));

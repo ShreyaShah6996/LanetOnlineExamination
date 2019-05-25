@@ -1,5 +1,5 @@
 import * as userTestService from '../Services/userTestService';
-import { ADD_USERTEST, ADD_USERTEST_FAILED, GET_USERTEST, GET_USERTEST_FAILED } from '../Reducer/userTestReducer';
+import { ADD_USERTEST, ADD_USERTEST_FAILED, GET_USERTEST, GET_USERTEST_FAILED, UPDATE_USERTEST, UPDATE_USERTEST_FAILED } from '../Reducer/userTestReducer';
 
 export const addUserTest = (data) => {
     return dispatch => {
@@ -36,6 +36,27 @@ export const getUserTest = (id) => {
                 dispatch({
                     type: GET_USERTEST_FAILED,
                     getUserTestError: error.response.data.error
+                })
+            })
+    }
+}
+
+
+export const updateUserTest = (userTestId, data) => {
+    return dispatch => {
+        return userTestService.updateUserTest(userTestId, data)
+            .then((response) => {
+                if (response.status === 200) {
+                    dispatch({
+                        type: UPDATE_USERTEST,
+                        updateUserTest: response.data["userTest"]
+                    })
+                }
+            })
+            .catch((error) => {
+                dispatch({
+                    type: UPDATE_USERTEST_FAILED,
+                    updateUserTestError: error.response.data.error
                 })
             })
     }

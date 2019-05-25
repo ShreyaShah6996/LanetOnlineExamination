@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 // reactstrap components
-import { Container } from "reactstrap";
 // core components
 import UserNavbar from "../components/Navbars/UserNavbar";
 import UserFooter from "../components/Footers/UserFooter";
@@ -65,9 +64,9 @@ class User extends React.Component {
                     {...this.props}
                 />
                 <Switch>{this.getRoutes(routes)}</Switch>
-                <Container fluid>
+                {/*<Container>*/}
                     <UserFooter />
-                </Container>
+                {/*</Container>*/}
             </div>
             </>
         );

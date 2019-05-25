@@ -240,7 +240,8 @@ class Test extends React.Component {
                                             <td><input type="text"
                                                        name={subTech.subTechId}
                                                        onChange={this.SubTechRatioChangeHandler.bind(this, technology.techId)}
-                                                       style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}
+                                                       class="all_tech_input"
+                                                       /*style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}*/
                                             /></td>
                                         </tr>
                                     )
@@ -252,7 +253,8 @@ class Test extends React.Component {
                                         <td><input type="text"
                                                    name={technology.techId}
                                                    onChange={this.TechRatioChangeHandler.bind(this, technology.techId)}
-                                                   style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}
+                                                   class="all_tech_input"
+                                                   // style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}
                                         /></td>
                                     </tr>
                                 )
@@ -276,6 +278,7 @@ class Test extends React.Component {
                                                 }>< input type="text"
                                                           name={subTech.subTechId}
                                                           onChange={this.SubTechRatioChangeHandler.bind(this, technology.techId)}
+                                                          class="all_tech_input"
                                                           style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px"}}
                                                 /></td>
                                             </tr>
@@ -291,7 +294,8 @@ class Test extends React.Component {
                                             }>< input type="text"
                                                       name={technology.techId}
                                                       onChange={this.TechRatioChangeHandler.bind(this, technology.techId)}
-                                                      style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px" }}
+                                                      // class="all_tech_input"
+                                                     style={{height: "33px", width: "30%", borderRadius: "7px", border: "1px solid #b3b3b3", padding: "9px" }}
                                             /></td>
                                         </tr>
                                     )
@@ -558,7 +562,7 @@ class Test extends React.Component {
                     <Row style={{marginTop: "10px"}}>
                         <div className="col">
                             <Card className=" shadow">
-                                <CardHeader className=" bg-transparent"><h3 className=" mb-0"> Test </h3></CardHeader>
+                                <CardHeader className=" bg-transparent"><h3 className="mb-0"> Test </h3></CardHeader>
                                 <Nav tabs>
                                     <NavItem>
                                         <NavLink
@@ -580,16 +584,16 @@ class Test extends React.Component {
                                         <Row>
                                             <div className=" col">
                                                 <Card className=" shadow">
-                                                    <Input type="select" name="select" style={{width: "8%", marginTop: "5px"}}
-                                                           onChange={this.recordPerPageChangeHandler.bind(this)}>
-                                                        <option value="5"> 5</option>
-                                                        <option value="10"> 10</option>
-                                                        <option value="25"> 25</option>
-                                                        <option value="50"> 50</option>
-                                                        <option value="100"> 100</option>
-                                                        <option value="All"> All</option>
-                                                    </Input> <br/>
                                                     <CardBody>
+                                                        <Input className="records_per_page_input_1" type="select" name="select"
+                                                               onChange={this.recordPerPageChangeHandler.bind(this)}>
+                                                            <option value="5"> 5</option>
+                                                            <option value="10"> 10</option>
+                                                            <option value="25"> 25</option>
+                                                            <option value="50"> 50</option>
+                                                            <option value="100"> 100</option>
+                                                            <option value="All"> All</option>
+                                                        </Input>
                                                         <BootstrapTable data={testData} striped hover>
                                                             <TableHeaderColumn isKey dataField="testName" width='130'
                                                                                dataSort={true}> Test Name
@@ -649,8 +653,7 @@ class Test extends React.Component {
                                                                     isMulti={true}
                                                                     isOptionDisabled={(option)=>option.disabled === 'true'}
                                                                      />
-                                                            <span
-                                                                style={{color: "red"}}> {this.state.errors.selectedOption} </span>
+                                                            <span class="error_show">{this.state.errors.selectedOption} </span>
                                                         </FormGroup>
                                                         <FormGroup>
                                                             <Input type="text"
@@ -658,7 +661,7 @@ class Test extends React.Component {
                                                                    placeholder="Test Name"
                                                                    onChange={this.onInputChangeHandler.bind(this)}/>
                                                             <span
-                                                                style={{color: "red"}}>{this.state.errors.testName} </span>
+                                                                class="error_show">{this.state.errors.testName} </span>
                                                         </FormGroup>
                                                         <FormGroup>
                                                             <Input type="textarea"
@@ -666,7 +669,7 @@ class Test extends React.Component {
                                                                    placeholder="Description"
                                                                    onChange={this.onInputChangeHandler.bind(this)}/>
                                                             <span
-                                                                style={{color: "red"}}> {this.state.errors.description} </span>
+                                                                class="error_show"> {this.state.errors.description} </span>
                                                         </FormGroup>
                                                         <FormGroup>
                                                             <Input type="number" name="totalQuestion"
@@ -675,13 +678,13 @@ class Test extends React.Component {
                                                                    min="1"
                                                             />
                                                             <span
-                                                                style={{color: "red"}}> {this.state.errors.totalQuestion} </span>
+                                                                class="error_show"> {this.state.errors.totalQuestion} </span>
                                                         </FormGroup>
                                                         <FormGroup>
                                                             <DatePicker selected={this.state.startDate}
                                                                         onChange={this.DateHandleChange}/>
                                                             <span
-                                                                style={{color: "red"}}> {this.state.errors.date} </span>
+                                                                class="error_show"> {this.state.errors.date} </span>
                                                         </FormGroup>
                                                         <FormGroup className="test-timepiker">
                                                             <TimePicker onChange={this.TimeChangeHandler.bind(this)}
@@ -691,19 +694,19 @@ class Test extends React.Component {
                                                             <Switch onChange={this.DurationToggle}
                                                                     checked={this.state.checked}/>
                                                             <span
-                                                                style={{color: "red"}}> {this.state.errors.duration} </span>
+                                                                class="error_show"> {this.state.errors.duration} </span>
                                                         </FormGroup>
                                                         <FormGroup>
                                                             <Input type="text" name="professor" placeholder="Professor"
                                                                    onChange={this.onInputChangeHandler.bind(this)}/>
                                                             <span
-                                                                style={{color: "red"}}> {this.state.errors.professor} </span>
+                                                                class="error_show"> {this.state.errors.professor} </span>
                                                         </FormGroup>
                                                         <FormGroup>
                                                             <Input type="text" name="token" placeholder="Token"
                                                                    onChange={this.onInputChangeHandler.bind(this)}/>
                                                             <span
-                                                                style={{color: "red"}}> {this.state.errors.token} </span>
+                                                                class="error_show"> {this.state.errors.token} </span>
                                                         </FormGroup>
                                                         <Button id="btnAddTest"
                                                                 onClick={this.btnAddTest.bind(this)}> Add Test </Button>
@@ -714,10 +717,10 @@ class Test extends React.Component {
                                                 <Card body>
                                                     <h3> Ratio for Technology </h3>
                                                     <Form>
-                                                        <Table style={{listStyle: "none", padding: "0", margin: "0"}}>
+                                                        <Table className="List_ratio">
                                                             <tbody>{allTech}</tbody>
                                                         </Table>
-                                                        <span style={{color: "red"}}> {this.state.errors.ratio} </span>
+                                                        <span class="error_show"> {this.state.errors.ratio} </span>
                                                         <br/>
                                                         <Button onClick={this.btnAddRatio.bind(this)}> Add
                                                             Ratio </Button>

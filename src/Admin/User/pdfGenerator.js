@@ -61,11 +61,8 @@ class PDFGenerator extends Component {
         })
         return (
             <div>
-                <Button onClick={this.generate} style={{ float: "right", marginRight: "25px", marginTop: "-46px" }}> PDF</Button>
-
-                <table id="basic-table"
-                    style={{ display: "none" }}
-                >
+                <Button onClick={this.generate} style={{ float: "right", marginRight:"0"}}> PDF</Button>
+                <table id="basic-table" style={{ display: "none" }} >
                     <thead>
                         <tr>
                             <th>No</th>

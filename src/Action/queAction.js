@@ -8,6 +8,7 @@ export const GetAllTechnologyAction = () => {
         return techService.GetTechnology()
             .then((response) => {
                 if (response.status === 200) {
+
                     dispatch({
                         type: GET_ALL_TECH,
                         data: response.data
@@ -29,6 +30,7 @@ export const GetSubtechnologyAction = (techId) => {
         return techService.GetSubtechnology(techId)
             .then((response) => {
                 if (response.status === 200) {
+
                     dispatch({
                         type: GET_SUBTECHNOLOGY,
                         data: response.data
@@ -50,6 +52,7 @@ export const AddQuestionAction = (data) => {
         return queService.AddQuestion(data)
             .then((response) => {
                 if (response.status === 200) {
+
                     dispatch({
                         type: ADD_QUESTION,
                         data: response.data

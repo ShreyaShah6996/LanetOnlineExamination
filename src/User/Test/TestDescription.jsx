@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -11,7 +11,7 @@ import TokenModel from './TokenModel.jsx';
 
 import { Card, Button, CardTitle, CardText } from 'reactstrap';
 
-class TestDescription extends Component {
+class TestDescription extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,15 +42,15 @@ class TestDescription extends Component {
             <div>
                 <UserHeader />
                 <TokenModel isOpen={this.state.modal}
-                    toggle={this.toggleTokenModel}
-                    test={(test.length > 0) ? test : null}>
+                            toggle={this.toggleTokenModel}
+                            test={(test.length > 0) ? test : null}>
                     Take Test
-            </TokenModel>
+                </TokenModel>
                 {(test !== [] && test.length !== 0) ?
                     <div style={{ margin: "5% 30%" }}>
                         <Card body>
                             <CardTitle style={{ textAlign: "center", fontSize: "30px", fontWeight: "500" }}>{test[0].testName}</CardTitle>
-                            <CardText>{test[0].description}</CardText>
+                            <CardText>With supporting text below as a natural lead-in to additional content.{(test[0].description !== "" && test[0].description !== null) ? test[0].description : null}</CardText>
                             <Button color="danger" onClick={() => this.toggleTokenModel()}>Start Test</Button>
                         </Card>
 

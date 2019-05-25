@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import * as techAction from '../../Action/techAction'
 import AddQuestions from './AddQuestions'
 import AddTechnology from './AddTechnology'
+import './Technologyquestion.css';
 
 
 class Technology extends React.Component {
@@ -112,8 +113,8 @@ class Technology extends React.Component {
 
                                 <CardBody>
                                     <AddTechnology isedit={this.state.isedit} editdata={this.state.editdata} toggle={this.toggle} />
-                                    <Container style={{ marginTop: "5px", marginLeft: "10px" }}>
-                                        <Input type="select" name="select" style={{ width: "8%" }} onChange={this.recordPerPageChangeHandler.bind(this)} >
+                                    <div class="records_per_page">
+                                        <Input className="records_per_page_input" type="select" name="select" onChange={this.recordPerPageChangeHandler.bind(this)} >
                                             <option value="5">5</option>
                                             <option value="10">10</option>
                                             <option value="25">25</option>
@@ -121,7 +122,7 @@ class Technology extends React.Component {
                                             <option value="100">100</option>
                                             <option value="All">All</option>
                                         </Input>
-                                    </Container>
+                                    </div>
                                     <BootstrapTable data={techdata} striped hover>
                                         <TableHeaderColumn dataField="techName" isKey width="200"
                                             filter={{ type: 'TextFilter' }} dataSort={true}>Name</TableHeaderColumn>
